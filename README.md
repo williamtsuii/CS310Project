@@ -1,4 +1,4 @@
-# TempName
+# Comic Sans
 
 This is just all the files from the express setup, with the firebase package added into the package.json. 
 
