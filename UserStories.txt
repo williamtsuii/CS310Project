@@ -1,0 +1,92 @@
+// COMICS SANS USER STORIES
+
+/* As a general user, I need to be able to sign up for an account, so that I can access my account in future.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As a general user, I need to be able to navigate through different pages of the comic so that I can read the
+ * entire comic.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As a general user, I need to be able to search tags so that I can view specific comics.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As a general user, I need to be able to browse comics by alphabetical order, year, or genre, so that I can
+ * read the most relevant comics.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As a general user, I need to be able to view suggested comics so that I can read new comics I might like.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As a general user, I need to be able to star comics so that I can save them to view again later.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As a general user, I need to be able to view a list of my favourite comics, so I can find a specific one
+ * easier.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As an editor user, I need to be able to sign up for an account, so that I can access my account in future.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As an editor user, I need to be able to upload images so that I can create a comic.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As an editor user, I need to be able to add a title and tags to my comic so that it can be searched easily.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As an editor user, I need to be able to save drafts of comics I am working on so that I can continue working
+ * on them later.
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+/* As an editor user, I need to be able to whitelist some other editor users for some comics so that I can
+ * collaborate with other specific editor users on creating and editing comics
+ * Notes:
+ * Definitions of done:
+ * Tasks:
+ * Time:
+ */
+
+
