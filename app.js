@@ -4,7 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var firebase = require('firebase');
+var Firebase = require('firebase');
+var rootRef = new Firebase('https://cs310.firebaseio.com/data');
+var userCollection = rootRef.child('users');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
