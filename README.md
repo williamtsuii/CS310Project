@@ -12,10 +12,10 @@ so just pull it and install it with npm install. We will work on this later i gu
   - Comics
 
 #FrameWork:
-  - express
+  - angularjs
 
 #Client:
-  - angular
+  - BootStrap
 
 #servers:
   - firebase for all text 
