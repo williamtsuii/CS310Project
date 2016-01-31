@@ -17,6 +17,9 @@ class Application {
         var Firebase = require('firebase');
         var rootRef = new Firebase('https://cs310.firebaseio.com/data');
         var userCollection = rootRef.child('users');
+        var mongo = require('mongodb');
+        var monk = require('monk');
+        var db = monk('localhost:27017/project')
 
         var routes = require('./routes/index');
         var users = require('./routes/users');
@@ -37,6 +40,19 @@ class Application {
 
         app.use('/', routes);
         app.use('/users', users);
+        
+        //makes it so requests with /view in it uses the mongo database
+        app.use('/view', function(req, res, next) {
+            req.db = db;
+            next();
+        });
+        
+        //for profile so the database to the person is given (need to figure out how to add personal id here)
+        app.use('/profile', function(req, res, next) {
+          
+           req.db = rootRef.child('users');
+           next(); 
+        });
 
         // catch 404 and forward to error handler
         app.use(function(req, res, next) {

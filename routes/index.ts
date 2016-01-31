@@ -40,6 +40,10 @@ class Router {
                 
             });
         });
+        
+        router.get('/view', function(req, res) {
+            //add function to grab images dependingongiven link for viewing
+        });
 
         module.exports = router;
     }
