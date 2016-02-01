@@ -26,6 +26,7 @@ app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-M
 require('./app/routes.js')(app);
 app.use('/user', function(req, res, next) { //set firebase as the request database
     req.db = userDB;                        //only if we go to user related url 
+    next();
 });
 
 // listen (start app with node server.js) ======================================
