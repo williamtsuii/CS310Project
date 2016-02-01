@@ -7,8 +7,11 @@ var database = require('./config/database'); 			// load the database config
 var morgan   = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
+var Firebase = require('firebase');
 
 // configuration ===============================================================
+var userDB = new Firebase(database.firebase); //create a userdatabase of firebase
+
 mongoose.connect(database.url); 	// connect to mongoDB database on modulus.io
 
 app.use(express.static(__dirname + '/public')); 		// set the static files location /public/img will be /img for users
@@ -21,6 +24,9 @@ app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-M
 
 // routes ======================================================================
 require('./app/routes.js')(app);
+app.use('/user', function(req, res, next) { //set firebase as the request database
+    req.db = userDB;                        //only if we go to user related url 
+});
 
 // listen (start app with node server.js) ======================================
 app.listen(port);
