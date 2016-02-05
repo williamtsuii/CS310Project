@@ -3,6 +3,8 @@ var database = require("c:/users/alex/onedrive/2015w2/cs310/comic-sans/config/da
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
 
+
+/*
 function getTodos(res) {
     Todo.find(function (err, todos) {
 
@@ -13,7 +15,7 @@ function getTodos(res) {
         res.json(todos); // return all todos in JSON format
     });
 };
-
+*/
 function login(req, res) {
 
     var userDB = refRoot;
