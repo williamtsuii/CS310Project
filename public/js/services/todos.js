@@ -1,4 +1,4 @@
-angular.module('todoService', [])
+angular.module('userService', [])
 
 	// super simple service
 	// each function returns a promise object 
@@ -6,6 +6,9 @@ angular.module('todoService', [])
 		return {
 			signup : function(userData) {
 				return $http.post('/user/createUser', userData);
+			},
+			login : function(){
+				return $http.get('/user/newUser');
 			}
 		}
 	}]);

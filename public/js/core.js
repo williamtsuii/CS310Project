@@ -1,9 +1,10 @@
-angular.module('scotchTodo', ['todoService','ngRoute'])
+angular.module('scotchTodo', ['userService','ngRoute'])
 
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/signup', {templateUrl: 'signup.html',   controller: signupController})
             .when('/home', {templateUrl:'home.html', controller:homeController})
+            .when('/login',{templateUrl:'login.html', controller:loginController} )
             .otherwise({redirectTo: '/home'});
     }]);
 
@@ -32,12 +33,23 @@ function signupController($scope, $http, User) {
                 .success(function(data) {
                     $scope.loading = false;
                     $scope.formData = {}; // clear the form so our user is ready to enter another
-                    $scope.todos = data; // assign our new list of todos
                 });
         }
     };
 }
 
+
+function loginController($scope,$http,User){
+    $scope.loginUser = function(){
+        console.log($scope.user);
+        User.login()
+            .success(function (data) {
+                console.log(data);
+                $scope.user = {};
+            });
+    }
+
+}
 
 function homeController(){
     console.log("hi");
