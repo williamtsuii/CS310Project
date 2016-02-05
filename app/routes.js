@@ -90,7 +90,7 @@ module.exports = function (app) {
         });
     });
     
-    app.post('user/edit/*'), function(req, res) {
+    app.put('user/edit/*'), function(req, res) {
         var userID = req.path;
         var userDB =refRoot.child('users/' + userID);
         
