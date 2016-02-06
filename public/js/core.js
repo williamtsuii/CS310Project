@@ -40,9 +40,10 @@ function signupController($scope, $http, User) {
 
 
 function loginController($scope,$http,User){
+
     $scope.loginUser = function(){
-        console.log($scope.user);
-        User.login()
+        console.log($scope.user.email);
+        User.login($scope.user)
             .success(function (data) {
                 console.log(data);
                 $scope.user = {};

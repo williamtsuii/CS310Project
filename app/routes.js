@@ -1,5 +1,5 @@
 var Todo = require('./models/todo');
-var database = require("c:/users/alex/onedrive/2015w2/cs310/comic-sans/config/database")
+var database = require('/home/banafsheh/Desktop/CPSC310/Project/Comic-Sans/config/database.js');
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
 
@@ -22,10 +22,8 @@ function login(req, res) {
     var userID;
 
     userDB.authWithPassword({
-
         "email": req.body.email,          //need to be changed for oo and depending on the html
-        "password": req.body.password      //same as above
-          
+        "password": req.body.password          //same as above
     }, function (error, authData) {
         if (error) {
             console.log("log in failed " + error);
@@ -47,7 +45,7 @@ module.exports = function (app) {
     
     //create a new user in the usezr database
     app.post('/user/createuser', function (req, res) {
-
+        console.log(req.body);
         var userDB = refRoot;
         var uUniqueDB;
 
@@ -61,21 +59,19 @@ module.exports = function (app) {
                 console.log("created a new user " + userData.uid);
                 uUniqueDB = userDB.child('users/' + userData.uid);
                 uUniqueDB.set({
-                    "name": req.body.name,                    //again changed for oo and depending on html
-                    "gender": req.body.gender,
-                    "birthday": req.body.birthday,
-                    "preferences": req.body.preferences
+
                 });
+                login(req, res);
             }
         });
 
-        login(req, res);
+
 
     });
     
     //get back userID and authenticating the client
-    app.get('/user/login', function (req, res) {
-        
+    app.put('/user/login', function (req, res) {
+        console.log(req.body);
         //login using the helper function to firebase
         login(req, res);
     });
