@@ -1,5 +1,5 @@
 var Todo = require('./models/todo');
-var database = require('/home/banafsheh/Desktop/CPSC310/Project/Comic-Sans/config/database.js');
+var database = require('c:\\users\alex\onedrive\2015w2\cs310\comic-sans\config\database.js');
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
 
