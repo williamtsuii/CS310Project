@@ -53,28 +53,28 @@ module.exports = function (app) {
 
         userDB.createUser({
             "email": req.body.email,       //need to be changed for oo and depending on html
-            "password": req.body.password  //same as above
+            "password": req.body.pwd  //same as above
         }, function (error, userData) {
             if (error) {
                 console.log("failed to create user");
             } else {
                 console.log("created a new user " + userData.uid);
                 uUniqueDB = userDB.child('users/' + userData.uid);
-                uUniqueDB.set({
+                /*uUniqueDB.set({
                     "name": req.body.name,                    //again changed for oo and depending on html
                     "gender": req.body.gender,
                     "birthday": req.body.birthday,
                     "preferences": req.body.preferences
                 });
+                */
+                login(req, res);
             }
         });
-
-        login(req, res);
 
     });
     
     //get back userID and authenticating the client
-    app.get('/user/login', function (req, res) {
+    app.put('/user/login', function (req, res) {
         
         //login using the helper function to firebase
         login(req, res);
@@ -111,6 +111,10 @@ module.exports = function (app) {
             }
         })
     }
+    
+    app.post('/comic/create', function(req, res) {
+        
+    });
     
 
     // application -------------------------------------------------------------
