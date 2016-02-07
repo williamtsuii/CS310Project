@@ -45,7 +45,6 @@ module.exports = function (app) {
     
     //create a new user in the usezr database
     app.post('/user/createuser', function (req, res) {
-        console.log(req.body);
         var userDB = refRoot;
         var uUniqueDB;
 
@@ -71,7 +70,6 @@ module.exports = function (app) {
     
     //get back userID and authenticating the client
     app.put('/user/login', function (req, res) {
-        console.log(req.body);
         //login using the helper function to firebase
         login(req, res);
     });
@@ -79,7 +77,7 @@ module.exports = function (app) {
     app.get('/user/profile/*', function (req, res) {
         var userID = req.path;
         var userDB = refRoot.child('users/' + userID);
-
+        console.log(req.body);
         userDB.once('value', function (snapshot) {
             var data = snapshot.val;
             res.json(data);
