@@ -79,7 +79,7 @@ module.exports = function (app) {
         var userDB = refRoot.child('users/' + userID);
         console.log(req.body);
         userDB.once('value', function (snapshot) {
-            var data = snapshot.val;
+            var data = snapshot.val();
             res.json(data);
         }, function (error) {
             res.send(error);
