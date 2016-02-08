@@ -1,0 +1,9 @@
+{
+  "firebase": "cs310",
+  "public": "public",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}

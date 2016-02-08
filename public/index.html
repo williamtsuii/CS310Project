@@ -1,17 +1,18 @@
 <!doctype html>
 
 <!-- ASSIGN OUR ANGULAR MODULE -->
-<html >
+<html ng-controller="MainCtrl" ng-app="scotchTodo">
 <head>
 	<!-- META -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
 
-	<title>Node/Angular Todo App</title>
+	<title>{{Page.title()}}</title>
 
 	<!-- SCROLLS -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="style/style.css">
 	<style>
 		html 					{ overflow-y:scroll; }
 		body 					{ padding-top:50px; }
@@ -23,24 +24,31 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script><!-- load angular -->
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js"></script>
 
-
+	<script src="js/services/page.js"></script>
 	<script src="js/services/todos.js"></script> <!-- load our todo service -->
 	<script src="js/core.js"></script> <!-- load our main application -->
 
 </head>
 <!-- SET THE CONTROLLER -->
 <body>
-<div ng-controller="MainCtrl" ng-app="scotchTodo">
+<body>
+<nav class="navbar navbar-default navbar-fixed-top page-bar">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">{{Page.title()}}</a>
+		</div>
+	</div>
+</nav>
+
+<div>
 
 	<ng-view>Loading...</ng-view>
 
 
-	<!-- Inline Templates (Partials) -->
-
 	<script type=text/ng-template id=signup.html>
 
 		<div class="container">
-			<form class="form" role="form">
+			<form class="form signup-form" role="form">
 				<div class="form-group">
 					<label for="email">Email address:</label>
 					<input type="email" class="form-control" id="email" ng-model="formData.email">
@@ -58,54 +66,26 @@
 		</div>
 	</script>
 
-
-	<script type=text/ng-template id=login.html>
-
-		<div class="container">
-			<form class="form" role="form">
-				<div class="form-group">
-					<label for="email">Email address:</label>
-					<input type="email" class="form-control" id="userEmail" ng-model="user.email">
-				</div>
-				<div class="form-group">
-					<label for="pwd">Password:</label>
-					<input type="password" class="form-control" id="userPwd" ng-model="user.password">
-				</div>
-				<button type="submit" class="btn btn-default" ng-click="loginUser()">Login</button>
-			</form>
-
-		</div>
-	</script>
-
 	<script type=text/ng-template id=home.html>
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="#">Comic Sans</a>
-				</div>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-					<li><a href="#/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-				</ul>
+		<div class="jumbotron main-header">
+			<h1>Comic Sans</h1>
+		</div>
+		<h1> Login to read or create comic strips!</h1>
+		<br>
+		<form class="form login-form" role="form">
+			<div class="form-group">
+				<label for="email">Email address:</label>
+				<input type="email" class="form-control" id="userEmail" ng-model="user.email">
 			</div>
-		</nav>
-	</script>
-
-	<script type=text/ng-template id=profile.html>
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="#">Comic Sans</a>
-				</div>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-					<li><a href="#/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-				</ul>
+			<div class="form-group">
+				<label for="pwd">Password:</label>
+				<input type="password" class="form-control" id="userPwd" ng-model="user.password">
 			</div>
-		</nav>
+			<button type="submit" class="btn btn-default login-button" ng-click="loginUser()">Login</button>
+		</form>
+		<br>
+		<p> Don't have an account? Sign up <span><a href="#/signup">here!</a></span></p>
 	</script>
-
-
 </div>
 </body>
 

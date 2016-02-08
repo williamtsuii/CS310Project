@@ -1,20 +1,23 @@
-angular.module('scotchTodo', ['userService','ngRoute'])
+angular.module('scotchTodo', ['userService','pageService','ngRoute'])
 
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/signup', {templateUrl: 'signup.html',   controller: signupController})
             .when('/home', {templateUrl:'home.html', controller:homeController})
-            .when('/login',{templateUrl:'login.html', controller:loginController} )
-            .when('/profile', {templateUrl:'profile.html', controller:profileController })
             .otherwise({redirectTo: '/home'});
     }]);
 
 var id;
-function MainCtrl() {
+
+function MainCtrl($scope, Page) {
     console.log('MainCtrl loaded!');
+    $scope.Page = Page;
+
 
 }
-function signupController($scope, User) {
+function signupController($scope, User, Page) {
+    Page.setTitle('Sign Up');
+    console.log(Page.title());
     $scope.formData = {};
     $scope.signupUser = function() {
         console.log($scope.formData);
@@ -35,21 +38,6 @@ function signupController($scope, User) {
 }
 
 
-function loginController($scope,User){
-    $scope.user = {};
-    $scope.loginUser = function(){
-        console.log($scope.user.email);
-        User.login($scope.user)
-            .success(function (data) {
-                console.log(data);
-                id = data;
-                $scope.user = {};
-                window.location.replace('/#/profile');
-            });
-    }
-
-}
-
 function profileController($scope, User){
     console.log(id);
     User.view(id)
@@ -58,6 +46,19 @@ function profileController($scope, User){
         });
 }
 
-function homeController(){
+function homeController($scope, User, Page){
     console.log("hi");
+    Page.setTitle('Home');
+    $scope.user = {};
+    $scope.loginUser = function(){
+        console.log($scope.user.email);
+        User.login($scope.user)
+            .success(function (data) {
+                id = data;
+                console.log(id);
+                $scope.user = {};
+                window.location.replace('/#/signup');
+            });
+    }
+
 }

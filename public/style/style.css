@@ -1,0 +1,27 @@
+body{
+    background-color: #E0E0CE;
+    margin: auto;
+    text-align: center;
+}
+
+.main-header{
+    background-color: #F2AF29;
+}
+
+.login-form{
+    width : 40%;
+    margin: auto;
+}
+
+.login-button{
+    background-color: #AD343E;
+}
+
+.signup-form{
+    width:40%;
+    margin:auto;
+}
+
+.page-bar{
+    background-color: #000000;
+}
