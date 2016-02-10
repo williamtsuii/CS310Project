@@ -9,6 +9,9 @@ angular.module('userService', [])
 			},
 			login : function(user){
 				return $http.put('/user/login', user);
+			},
+			view : function(id){
+				return $http.get('/user/profile'+ "/" + id);
 			}
 		}
 	}]);

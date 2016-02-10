@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 var Todo = require('./models/todo');
 var database = require('c:/users/alex/onedrive/2015w2/cs310/comic-sans/config/database');
+=======
+var Comic = require('./models/comic');
+var database = require('C:/Users/willi/Documents/CS310 Project/Comic-Sans/config/database.js');
+>>>>>>> def654a8156ac48f7e8644505e84d5b778253b55
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
+var comicDB = new Comic(database.url);
 
 
 /*
@@ -41,11 +47,8 @@ function login(req, res) {
 module.exports = function (app) {
 
     // api ---------------------------------------------------------------------
-    // get all todos
-    
-    //create a new user in the usezr database
+    //create a new user in the user database
     app.post('/user/createuser', function (req, res) {
-        console.log(req.body);
         var userDB = refRoot;
         var uUniqueDB;
 
@@ -64,32 +67,31 @@ module.exports = function (app) {
                 login(req, res);
             }
         });
-
-
-
     });
     
     //get back userID and authenticating the client
     app.put('/user/login', function (req, res) {
-        console.log(req.body);
-        //login using the helper function to firebase
+        //login u+ng the helper function to firebase
         login(req, res);
     });
 
     app.use('/user/profile/', function (req, res) {
         var userID = req.path;
         var userDB = refRoot.child('users/' + userID);
-
+        console.log(req.body);
         userDB.once('value', function (snapshot) {
             var data = snapshot.val();
+<<<<<<< HEAD
             console.log(data);
+=======
+>>>>>>> def654a8156ac48f7e8644505e84d5b778253b55
             res.json(data);
         }, function (error) {
             res.send(error);
         });
     });
     
-    app.put('user/edit/*'), function(req, res) {
+    app.put('user/edit/*', function(req, res) {
         var userID = req.path;
         var userDB =refRoot.child('users/' + userID);
         
@@ -107,8 +109,52 @@ module.exports = function (app) {
                 res.send(true);
             }
         })
-    }
+    });
     
+
+     // view+create comics -------------------------------------------------------------
+    /* GET New Comic Page. */
+    app.get('/comic/newcomic', function (req, res) {
+        var comicID;
+        res.send(comicID);
+    });    
+    /* POST to Create Comic Service. */
+    app.post('/comic/createcomic', function (req, res, authData) {
+        var db = comicDB;
+        var comicID = req.path;
+        var userID = authData.uid;
+
+        comicDB.insert({
+            "id": comicID,
+            "author": userID,
+            "title": req.body.title,
+            "synopsis": req.body.about
+        }, function (err, comic) {
+            if (err)
+                res.send(err);
+            else {
+                console.log("created new comic");
+                res.redirect('/home');
+            }
+        });
+
+
+    });
+
+    /* GET Comic View Page */
+    app.get('/comic/view/*', function (req, res) {
+        var comicID = req.path;
+        var db = comicDB.child('comics/' + comicID);
+        db.once('value', function (snapshot) {
+            var data = snapshot.val();
+            res.json(data);
+        }, function (error) {
+            res.send(error);
+        });
+    });
+
+
+
 
     // application -------------------------------------------------------------
     app.get('*', function (req, res) {
