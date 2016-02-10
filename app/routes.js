@@ -81,10 +81,6 @@ module.exports = function (app) {
         console.log(req.body);
         userDB.once('value', function (snapshot) {
             var data = snapshot.val();
-<<<<<<< HEAD
-            console.log(data);
-=======
->>>>>>> def654a8156ac48f7e8644505e84d5b778253b55
             res.json(data);
         }, function (error) {
             res.send(error);

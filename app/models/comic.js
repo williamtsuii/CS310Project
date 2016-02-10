@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 module.exports = mongoose.model('Comic', {
+    image : [{data: Buffer, contentType: String}],
     id: String,
     title:  String,
     author: String,

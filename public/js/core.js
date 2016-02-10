@@ -12,16 +12,7 @@ var id;
 
 function MainCtrl($scope, Page) {
     console.log('MainCtrl loaded!');
-<<<<<<< HEAD
-}
-function signupController($scope, $http, User) {
-    $scope.formData = {};
-    $scope.formData.editor = false;
-    $scope.loading = true;
-    
-=======
     $scope.Page = Page;
->>>>>>> def654a8156ac48f7e8644505e84d5b778253b55
 
 
 }
