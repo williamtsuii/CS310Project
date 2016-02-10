@@ -1,5 +1,5 @@
 var Todo = require('./models/todo');
-var database = require('c:\\users\alex\onedrive\2015w2\cs310\comic-sans\config\database.js');
+var database = require('c:/users/alex/onedrive/2015w2/cs310/comic-sans/config/database');
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
 
@@ -59,7 +59,7 @@ module.exports = function (app) {
                 console.log("created a new user " + userData.uid);
                 uUniqueDB = userDB.child('users/' + userData.uid);
                 uUniqueDB.set({
-
+                    "editor" : req.body.editor,
                 });
                 login(req, res);
             }
@@ -76,12 +76,13 @@ module.exports = function (app) {
         login(req, res);
     });
 
-    app.get('/user/profile/*', function (req, res) {
+    app.use('/user/profile/', function (req, res) {
         var userID = req.path;
         var userDB = refRoot.child('users/' + userID);
 
         userDB.once('value', function (snapshot) {
-            var data = snapshot.val;
+            var data = snapshot.val();
+            console.log(data);
             res.json(data);
         }, function (error) {
             res.send(error);

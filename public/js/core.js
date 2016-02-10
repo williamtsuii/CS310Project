@@ -14,7 +14,9 @@ function MainCtrl() {
 }
 function signupController($scope, $http, User) {
     $scope.formData = {};
+    $scope.formData.editor = false;
     $scope.loading = true;
+    
 
 
     // CREATE ==================================================================
