@@ -1,13 +1,9 @@
-<<<<<<< HEAD
-var Todo = require('./models/todo');
-var database = require('c:/users/alex/onedrive/2015w2/cs310/comic-sans/config/database');
-=======
 var Comic = require('./models/comic');
-var database = require('C:/Users/willi/Documents/CS310 Project/Comic-Sans/config/database.js');
->>>>>>> def654a8156ac48f7e8644505e84d5b778253b55
+database = require('C:/Users/Alex/Onedrive/2015w2/cs310/comic-sans/config/database.js');
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
-var comicDB = new Comic(database.url);
+//var comicDB = new Comic(database.url);
+var fs = require('fs');
 
 
 /*
@@ -62,7 +58,8 @@ module.exports = function (app) {
                 console.log("created a new user " + userData.uid);
                 uUniqueDB = userDB.child('users/' + userData.uid);
                 uUniqueDB.set({
-                    "editor" : req.body.editor,
+                    "editor" : true,
+                    "username": "chrom261"
                 });
                 login(req, res);
             }
@@ -75,11 +72,11 @@ module.exports = function (app) {
         login(req, res);
     });
 
-    app.use('/user/profile/', function (req, res) {
+    app.get('/user/profile/', function (req, res) {
         var userID = req.path;
         var userDB = refRoot.child('users/' + userID);
         console.log(req.body);
-        userDB.once('value', function (snapshot) {
+        userDB.on('value', function (snapshot) {
             var data = snapshot.val();
             res.json(data);
         }, function (error) {
@@ -116,20 +113,23 @@ module.exports = function (app) {
     });    
     /* POST to Create Comic Service. */
     app.post('/comic/createcomic', function (req, res, authData) {
-        var db = comicDB;
         var comicID = req.path;
         var userID = authData.uid;
+        
 
-        comicDB.insert({
+        Comic.create({
+            "image": {},
             "id": comicID,
-            "author": userID,
+            "author": {"uid": userID, "username" : username},
             "title": req.body.title,
-            "synopsis": req.body.about
+            "collaborators": req.body.collabs,
+            "synopsis": req.body.about,
+            "hidden" : req.body.hidden
         }, function (err, comic) {
             if (err)
                 res.send(err);
             else {
-                console.log("created new comic");
+                console.log("comic " + req.body.title + " added");
                 res.redirect('/home');
             }
         });
