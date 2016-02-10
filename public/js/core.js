@@ -4,6 +4,7 @@ angular.module('scotchTodo', ['userService','pageService','ngRoute'])
         $routeProvider
             .when('/signup', {templateUrl: 'signup.html',   controller: signupController})
             .when('/home', {templateUrl:'home.html', controller:homeController})
+            .when('/create', {templateUrl:'create.html', controller:createController}) 
             .otherwise({redirectTo: '/home'});
     }]);
 
@@ -46,6 +47,24 @@ function profileController($scope, User){
         });
 }
 
+function createController($scope, Comic, Page) {
+    Page.setTitle("New Comic");
+    console.log(Page.title());
+    $scope.formData = {};
+    $scope.createComic = function() {
+        console.log($scope.formData);
+        // validate the formData to make sure that something is there
+        // if form is empty, nothing will happen
+        Comic.create($scope.formData)
+            .success(function(data) {
+                window.location.replace('/#/home');
+                //$scope.formData = {}; // clear the form so our user is ready to enter another
+
+                });
+        }
+}
+
+
 function homeController($scope, User, Page){
     console.log("hi");
     Page.setTitle('Home');
@@ -57,7 +76,7 @@ function homeController($scope, User, Page){
                 id = data;
                 console.log(id);
                 $scope.user = {};
-                window.location.replace('/#/signup');
+                window.location.replace('/#/home');
             });
     }
 
