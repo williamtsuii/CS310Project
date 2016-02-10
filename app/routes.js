@@ -1,7 +1,8 @@
-var Todo = require('./models/todo');
-var database = require("c:/users/alex/onedrive/2015w2/cs310/comic-sans/config/database")
+var Comic = require('./models/comic');
+var database = require('C:/Users/willi/Documents/CS310 Project/Comic-Sans/config/database.js');
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
+var comicDB = new Comic(database.url);
 
 
 /*
@@ -22,10 +23,8 @@ function login(req, res) {
     var userID;
 
     userDB.authWithPassword({
-
         "email": req.body.email,          //need to be changed for oo and depending on the html
-        "password": req.body.password      //same as above
-          
+        "password": req.body.password          //same as above
     }, function (error, authData) {
         if (error) {
             console.log("log in failed " + error);
@@ -43,11 +42,8 @@ function login(req, res) {
 module.exports = function (app) {
 
     // api ---------------------------------------------------------------------
-    // get all todos
-    
-    //create a new user in the usezr database
+    //create a new user in the user database
     app.post('/user/createuser', function (req, res) {
-
         var userDB = refRoot;
         var uUniqueDB;
 
@@ -61,46 +57,38 @@ module.exports = function (app) {
                 console.log("created a new user " + userData.uid);
                 uUniqueDB = userDB.child('users/' + userData.uid);
                 uUniqueDB.set({
-                    "name": req.body.name,                    //again changed for oo and depending on html
-                    "gender": req.body.gender,
-                    "birthday": req.body.birthday,
-                    "preferences": req.body.preferences
+                    "preferences": req.body.preferences,
+                    "username": req.body.name,
+                    "editor": req.body.editor
                 });
+                login(req, res);
             }
         });
-
-        login(req, res);
-
     });
     
     //get back userID and authenticating the client
-    app.get('/user/login', function (req, res) {
-        
-        //login using the helper function to firebase
+    app.put('/user/login', function (req, res) {
+        //login u+ng the helper function to firebase
         login(req, res);
     });
 
     app.get('/user/profile/*', function (req, res) {
         var userID = req.path;
         var userDB = refRoot.child('users/' + userID);
-
-        userDB.once('value', function (snapshot) {
-            var data = snapshot.val;
+        console.log(req.body);
+        userDB.on('value', function (snapshot) {
+            var data = snapshot.val();
             res.json(data);
         }, function (error) {
             res.send(error);
         });
     });
     
-    app.put('user/edit/*'), function(req, res) {
+    app.put('user/edit/*', function(req, res) {
         var userID = req.path;
         var userDB =refRoot.child('users/' + userID);
         
         userDB.set({
-            "name" : req.body.name,
-            "gender": req.body.gender,
-            "birthday": req.body.birthday,
-            "preferences": req.body.preferences
         }, function(error){
             if(error) { 
                 console.log("failed to create user");
@@ -110,8 +98,52 @@ module.exports = function (app) {
                 res.send(true);
             }
         })
-    }
+    });
     
+
+     // view+create comics -------------------------------------------------------------
+    /* GET New Comic Page. */
+    app.get('/comic/newcomic', function (req, res) {
+        var comicID;
+        res.send(comicID);
+    });    
+    /* POST to Create Comic Service. */
+    app.post('/comic/createcomic', function (req, res, authData) {
+        var db = comicDB;
+        var comicID = req.path;
+        var userID = authData.uid;
+
+        comicDB.insert({
+            "id": comicID,
+            "author": userID,
+            "title": req.body.title,
+            "synopsis": req.body.about
+        }, function (err, comic) {
+            if (err)
+                res.send(err);
+            else {
+                console.log("created new comic");
+                res.redirect('/home');
+            }
+        });
+
+
+    });
+
+    /* GET Comic View Page */
+    app.get('/comic/view/*', function (req, res) {
+        var comicID = req.path;
+        var db = comicDB.child('comics/' + comicID);
+        db.once('value', function (snapshot) {
+            var data = snapshot.val();
+            res.json(data);
+        }, function (error) {
+            res.send(error);
+        });
+    });
+
+
+
 
     // application -------------------------------------------------------------
     app.get('*', function (req, res) {

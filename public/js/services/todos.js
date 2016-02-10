@@ -5,10 +5,13 @@ angular.module('userService', [])
 	.factory('User', ['$http',function($http) {
 		return {
 			signup : function(userData) {
-				return $http.post('/user/createUser', userData);
+				return $http.post('/user/createuser', userData);
 			},
-			login : function(){
-				return $http.get('/user/newUser');
+			login : function(user){
+				return $http.put('/user/login', user);
+			},
+			view : function(id){
+				return $http.get('/user/profile'+ "/" + id);
 			}
 		}
 	}]);
