@@ -58,8 +58,9 @@ module.exports = function (app) {
                 console.log("created a new user " + userData.uid);
                 uUniqueDB = userDB.child('users/' + userData.uid);
                 uUniqueDB.set({
-                    "editor" : true,
-                    "username": "chrom261"
+                    "preferences": req.body.preferences,
+                    "username": req.body.name,
+                    "editor": req.body.editor
                 });
                 login(req, res);
             }
@@ -72,11 +73,13 @@ module.exports = function (app) {
         login(req, res);
     });
 
-    app.get('/user/profile/', function (req, res) {
-        var userID = req.path;
-        var userDB = refRoot.child('users/' + userID);
+    app.get('/user/profile/:uid', function (req, res) {
+        var userID = req.params.uid;
+        console.log(userID);
+        var userDB = refRoot.child('users/');
+        var uUserDB = userDB.child(userID);
         console.log(req.body);
-        userDB.on('value', function (snapshot) {
+        uUserDB.on('value', function (snapshot) {
             var data = snapshot.val();
             res.json(data);
         }, function (error) {
@@ -89,10 +92,6 @@ module.exports = function (app) {
         var userDB =refRoot.child('users/' + userID);
         
         userDB.set({
-            "name" : req.body.name,
-            "gender": req.body.gender,
-            "birthday": req.body.birthday,
-            "preferences": req.body.preferences
         }, function(error){
             if(error) { 
                 console.log("failed to create user");
