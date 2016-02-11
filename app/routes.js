@@ -1,5 +1,5 @@
 var Comic = require('./models/comic');
-database = require('C:/Users/Alex/Onedrive/2015w2/cs310/comic-sans/config/database.js');
+database = require('../config/database.js');
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
 //var comicDB = new Comic(database.url);
