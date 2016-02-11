@@ -47,26 +47,26 @@
 
 	<script type=text/ng-template id=signup.html>
 
-		<div class="container">
+		<div class="container" >
 			<form class="form signup-form" role="form">
 				<div class="form-group">
 					<label for="email">Email address:</label>
-					<input type="email" class="form-control" id="email" ng-model="formData.email">
+					<input type="email" class="form-control" id="email" ng-model="signUp.formData.email">
 				</div>
 				<div class="form-group">
 					<label for="pwd">Password:</label>
-					<input type="password" class="form-control" id="pwd" ng-model="formData.password">
+					<input type="password" class="form-control" id="pwd" ng-model="signUp.formData.password">
 				</div>
 				<div class="form-group">
 					<label for="name">Username:</label>
-					<input type="text" class="form-control" id="name" ng-model="formData.name">
+					<input type="text" class="form-control" id="name" ng-model="signUp.formData.name">
 				</div>
 				<div class="form-group">
 					<label for="preference">Preferences:</label>
-					<textarea type="text" class="form-control" id="preference" ng-model="formData.preferences"></textarea>
+					<textarea type="text" class="form-control" id="preference" ng-model="signUp.formData.preferences"></textarea>
 				</div>
 				<div class="checkbox">
-					<label><input type="checkbox" ng-model="formData.editor">I want to be an editor user</label>
+					<label><input type="checkbox" ng-model="signUp.formData.editor">I want to be an editor user</label>
 				</div>
 				<button type="submit" class="btn btn-default" ng-click="signupUser()">Submit</button>
 			</form>
@@ -75,33 +75,36 @@
 	</script>
 
 	<script type=text/ng-template id=home.html>
-		<div class="jumbotron main-header">
-			<h1>Comic Sans</h1>
+		<div class="container" >
+			<div class="jumbotron main-header">
+				<h1>Comic Sans</h1>
+			</div>
+			<h1> Login to read or create comic strips!</h1>
+			<br>
+			<form class="form login-form" role="form">
+				<div class="form-group">
+					<label for="email">Email address:</label>
+					<input type="email" class="form-control" id="userEmail" ng-model="home.user.email">
+				</div>
+				<div class="form-group">
+					<label for="pwd">Password:</label>
+					<input type="password" class="form-control" id="userPwd" ng-model="home.user.password">
+				</div>
+				<button type="submit" class="btn btn-default login-button" ng-click="loginUser()">Login</button>
+			</form>
+			<br>
+			<p> Don't have an account? Sign up <span><a href="#/signup">here!</a></span></p>
 		</div>
-		<h1> Login to read or create comic strips!</h1>
-		<br>
-		<form class="form login-form" role="form">
-			<div class="form-group">
-				<label for="email">Email address:</label>
-				<input type="email" class="form-control" id="userEmail" ng-model="user.email">
-			</div>
-			<div class="form-group">
-				<label for="pwd">Password:</label>
-				<input type="password" class="form-control" id="userPwd" ng-model="user.password">
-			</div>
-			<button type="submit" class="btn btn-default login-button" ng-click="loginUser()">Login</button>
-		</form>
-		<br>
-		<p> Don't have an account? Sign up <span><a href="#/signup">here!</a></span></p>
+
 	</script>
 
 	<script type=text/ng-template id=profile.html>
-		<div class="jumbotron main-header">
-			<h1>Comic Sans</h1>
+		<div class="container" >
+			<h1>Welcome <span> {{profile.user.username}}</span>!</h1>
+			<p>Your preferences Are: <span> {{profile.user.preferences}}</span></p>
+			<button class="btn btn-default" ng-show="profile.user.preferences" ng-click="createComic()">Create Comic</button>
 		</div>
-		<h1> Login to read or create comic strips!</h1>
-		<br>
-		<p>{{user.email}}</p>
+
 	</script>
 </div>
 </body>
