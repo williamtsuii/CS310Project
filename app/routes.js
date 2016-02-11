@@ -1,5 +1,5 @@
 var Comic = require('./models/comic');
-database = require('/home/banafsheh/Desktop/CPSC310/Project/Comic-Sans/config/database.js');
+database = require('../config/database.js');
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
 //var comicDB = new Comic(database.url);
@@ -69,7 +69,7 @@ module.exports = function (app) {
     
     //get back userID and authenticating the client
     app.put('/user/login', function (req, res) {
-        //login u+ng the helper function to firebase
+        //login using the helper function to firebase
         login(req, res);
     });
 
@@ -137,14 +137,16 @@ module.exports = function (app) {
     });
 
     /* GET Comic View Page */
-    app.get('/comic/view/*', function (req, res) {
-        var comicID = req.path;
-        var db = comicDB.child('comics/' + comicID);
-        db.once('value', function (snapshot) {
-            var data = snapshot.val();
-            res.json(data);
-        }, function (error) {
-            res.send(error);
+    app.get('/comic/view/:comicID', function (req, res) {
+        var comicID = req.params.comicID;
+        
+        Comic.findOne({"id": comicID}, function(err, Comic) { 
+          if (err) {
+            console.log(err);
+          } else {
+            res.json(Comic);
+            console.log(found.comicID);
+          }
         });
     });
 
