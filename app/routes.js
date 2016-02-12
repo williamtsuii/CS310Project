@@ -150,17 +150,17 @@ module.exports = function (app) {
         });
     });
 
-    app.upload('comic/upload', function (req, res, authData) {
-        var comicID = req.path;
-        var userID = authData.uid;
-
-        Comic.upload({
-
-        }, function () {
-
-        });
-        
-    });
+    //app.upload('comic/upload', function (req, res, authData) {
+    //    var comicID = req.path;
+    //    var userID = authData.uid;
+    //
+    //    Comic.upload({
+    //
+    //    }, function () {
+    //
+    //    });
+    //
+    //});
 
 
     // application -------------------------------------------------------------
