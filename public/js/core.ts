@@ -47,6 +47,13 @@ module comicSans {
 
     }
 
+    class createController{
+        static $inject = ['$scope','userService','pageService'];
+        constructor($scope, User: userService,Page: pageService){
+            $scope.Page.setTitle('Sign Up');
+        }
+    }
+
     //
 //function signupController($scope, User, Page) {
 //    var signUp = this;
