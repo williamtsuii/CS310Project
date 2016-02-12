@@ -1,5 +1,8 @@
+///<reference path='../types/DefinitelyTyped/node/node.d.ts'/>
+///<reference path="../types/DefinitelyTyped/express/express.d.ts"/>
+
 var Comic = require('./models/comic');
-database = require('../config/database.js');
+var database = require('../config/database.js');
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
 //var comicDB = new Comic(database.url);
@@ -148,18 +151,6 @@ module.exports = function (app) {
             console.log(found.comicID);
           }
         });
-    });
-
-    app.upload('comic/upload', function (req, res, authData) {
-        var comicID = req.path;
-        var userID = authData.uid;
-
-        Comic.upload({
-
-        }, function () {
-
-        });
-        
     });
 
 
