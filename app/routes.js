@@ -153,6 +153,21 @@ module.exports = function (app) {
         });
     });
 
+<<<<<<< HEAD
+=======
+    //app.upload('comic/upload', function (req, res, authData) {
+    //    var comicID = req.path;
+    //    var userID = authData.uid;
+    //
+    //    Comic.upload({
+    //
+    //    }, function () {
+    //
+    //    });
+    //
+    //});
+
+>>>>>>> 0b8bab99e0dc552ad05b76d45cd66446aa64dd78
 
     // application -------------------------------------------------------------
     app.get('*', function (req, res) {

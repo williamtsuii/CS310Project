@@ -1,5 +1,6 @@
 /// <reference path="../../../types/DefinitelyTyped/angularjs/angular.d.ts" />
 /// <reference path="../../../types/DefinitelyTyped/angularjs/angular-route.d.ts" />
+
 //module comicSans{
 //
 //
@@ -32,6 +33,7 @@
 //		.module('comicSans',['ngRoute'])
 //		.service('userService', userService);
 //}
+
 //angular.module('userService', [])
 //
 //	// super simple service
@@ -48,5 +50,4 @@
 //				return $http.get('/user/profile'+ "/" + id);
 //			}
 //		}
-//	}]); 
-//# sourceMappingURL=todos.js.map
+//	}]);

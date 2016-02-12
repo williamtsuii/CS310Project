@@ -25,6 +25,9 @@
 //        .module('comicSans',['ngRoute'])
 //        .service('pageService', pageService);
 //}
+
+
+
 //angular.module('pageService', [])
 //
 //    // super simple service
@@ -35,5 +38,4 @@
 //            title: function() { return title; },
 //            setTitle: function(newTitle) { title = newTitle }
 //        };
-//    }); 
-//# sourceMappingURL=page.js.map
+//    });
