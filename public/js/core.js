@@ -33,8 +33,8 @@ var comicSans;
             this.User.signup(form)
                 .success(function (data) {
                 console.log(data);
-                //window.localStorage.setItem('id',data);
-                //window.location.replace('/#/profile');
+                window.localStorage.setItem('id', data);
+                window.location.replace('/#/profile');
             });
         };
         signupController.$inject = ['$scope', 'userService', 'pageService'];
@@ -102,23 +102,25 @@ var comicSans;
             console.log('profileController loaded!');
             $scope.Page.setTitle('Profile');
             this.User = User;
-            this.viewProfile(window.localStorage.getItem('id'));
-            console.log(this.u);
-            $scope.abc = this.u;
-            //console.log(window.localStorage.getItem('id'));
+            this.viewProfile(window.localStorage.getItem('id'), $scope);
+            console.log($scope.abc);
         }
-        profileController.prototype.viewProfile = function (s) {
+        profileController.prototype.viewProfile = function (s, $scope) {
             //console.log('viewProfile');
             //console.log(s);
+            var that = this;
             this.User.view(s)
                 .success(function (data) {
                 console.log(data);
-                this.u = data;
-                console.log(this.u);
+                $scope.abc = data;
+                console.log($scope.abc);
+                //return data;
             });
         };
         profileController.prototype.createComic = function () {
             window.location.replace('/#/create');
+        };
+        profileController.prototype.setU = function (a) {
         };
         profileController.$inject = ['$scope', 'userService', 'pageService'];
         return profileController;
@@ -233,3 +235,4 @@ var comicSans;
 //    }
 //
 //}
+//# sourceMappingURL=core.js.map

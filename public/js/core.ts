@@ -40,8 +40,8 @@ module comicSans {
             this.User.signup(form)
                 .success(function(data){
                    console.log(data);
-                    //window.localStorage.setItem('id',data);
-                    //window.location.replace('/#/profile');
+                    window.localStorage.setItem('id',data);
+                    window.location.replace('/#/profile');
                 });
         }
 
@@ -119,23 +119,27 @@ module comicSans {
             console.log('profileController loaded!');
             $scope.Page.setTitle('Profile');
             this.User = User;
-            this.viewProfile(window.localStorage.getItem('id'));
-            console.log(this.u);
-            $scope.abc = this.u;
-            //console.log(window.localStorage.getItem('id'));
+            this.viewProfile(window.localStorage.getItem('id'), $scope);
+            console.log($scope.abc);
         }
-        viewProfile(s:string){
+        viewProfile(s:string, $scope){
             //console.log('viewProfile');
             //console.log(s);
+            var that = this;
             this.User.view(s)
                 .success(function(data){
                     console.log(data);
-                    this.u = data;
-                    console.log(this.u);
+                    $scope.abc = data;
+                    console.log($scope.abc);
+                   //return data;
                 });
         }
         createComic(){
             window.location.replace('/#/create');
+        }
+
+        setU(a : any){
+
         }
     }
 
