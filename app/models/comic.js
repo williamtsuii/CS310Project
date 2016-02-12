@@ -11,3 +11,4 @@ var Comic = new mongoose_1.Schema({
     hidden: Boolean
 });
 module.exports = Comic;
+//# sourceMappingURL=comic.js.map
