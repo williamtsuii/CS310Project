@@ -40,13 +40,26 @@ var comicSans;
         signupController.$inject = ['$scope', 'userService', 'pageService'];
         return signupController;
     })();
-    var createController = (function () {
-        function createController($scope, User, Page) {
-            $scope.Page.setTitle('Sign Up');
+    var createController = function ($scope, userService, pageService) {
+        $scope.stepsModel = [];
+
+        $scope.imageUpload = function(event){
+            var files = event.target.files; //FileList object
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var reader = new FileReader();
+                reader.onload = $scope.imageIsLoaded;
+                reader.readAsDataURL(file);
+            }
         }
-        createController.$inject = ['$scope', 'userService', 'pageService'];
-        return createController;
-    })();
+
+        $scope.imageIsLoaded = function(e){
+            $scope.$apply(function() {
+                $scope.stepsModel.push(e.target.result);
+            });
+        }
+    };
     //
     //function signupController($scope, User, Page) {
     //    var signUp = this;
@@ -180,6 +193,7 @@ var comicSans;
         .controller('homeController', homeController)
         .controller('signupController', signupController)
         .controller('profileController', profileController)
+        .controller('createController', createController)
         .service('userService', userService)
         .service('pageService', pageService)
         .config(routes);

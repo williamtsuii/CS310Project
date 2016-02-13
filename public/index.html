@@ -110,13 +110,11 @@
 
 	<script type=text/ng-template id=create.html>
 		<div id="container">
-			<div class="form-group">
-				<label for="email">Comic Title:</label>
-				<input type="email" class="form-control">
+			<div ng-repeat="step in stepsModel">
+				<img class="thumb" ng-src="{{step}}" />
 			</div>
-			<input type="file" id="imageLoader" name="imageLoader" />
-			<canvas id="imageCanvas" width="400" height="200"></canvas>
-			<a id="imageSaver" href="#">Save image</a>
+
+			<input type='file' ng-model-instant onchange="angular.element(this).scope().imageUpload(event)" multiple />
 		</div>
 
 	</script>
