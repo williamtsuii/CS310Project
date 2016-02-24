@@ -1,7 +1,11 @@
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular.d.ts" />
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular-route.d.ts" />
 
+// Main module for the app
+
 module comicSans {
+
+    // Routing of the app using routeProvider
 
     function routes($routeProvider : ng.route.IRouteProvider){
         $routeProvider
@@ -13,7 +17,7 @@ module comicSans {
     }
 
 
-
+    // MainCtrl that loads when the app loads
     class MainCtrl{
         static $inject = ['$scope','userService','pageService'];
         constructor($scope,User: userService,Page: pageService){
@@ -25,6 +29,9 @@ module comicSans {
 
     }
 
+
+    // Controller for when user goes to signup page. Uses userService and pageService. Sets the page name to 'Sign Up'
+    // and on click on submit button saves the id in local storage and redirects user to their profile.
     class signupController{
         static $inject = ['$scope','userService','pageService'];
         private User;
@@ -36,10 +43,9 @@ module comicSans {
             this.User = User;
         }
         submit(form : any){
-            console.log(form);
             this.User.signup(form)
                 .success(function(data){
-                   console.log(data);
+                    console.log('hello');
                     window.localStorage.setItem('id',data);
                     window.location.replace('/#/profile');
                 });
@@ -47,6 +53,7 @@ module comicSans {
 
     }
 
+    // Controller for creating comics
     class createController{
         static $inject = ['$scope','userService','pageService'];
         constructor($scope, User: userService,Page: pageService){
@@ -54,25 +61,8 @@ module comicSans {
         }
     }
 
-    //
-//function signupController($scope, User, Page) {
-//    var signUp = this;
-//    Page.setTitle('Sign Up');
-//    $scope.formData = {};
-//    $scope.signupUser = function() {
-//        // validate the formData to make sure that something is there
-//        // if form is empty, nothing will happen
-//        if (signUp.formData.email != undefined) {
-//            User.signup(signUp.formData)
-//                .success(function(data) {
-//                    id = data;
-//                    window.location.replace('/#/profile');
-//
-//                });
-//        }
-//    };
-//}
 
+    //Constroller for homepage which also has login
     class homeController{
         static $inject = ['$scope','userService','pageService'];
         private User;
@@ -83,40 +73,20 @@ module comicSans {
             console.log('homeController loaded!')
             $scope.Page.setTitle('Home');
             this.User = User;
-            console.log(this.u);
         }
 
         submit(a:any){
             this.User.login(a)
                 .success(function(data){
-                    console.log(data);
-                    console.log(a);
                     this.u = a;
                     window.localStorage.setItem('id',data);
-                    console.log(window.localStorage.getItem('id'));
                     window.location.replace('/#/profile');
 
                 });
             }
 
     }
-
-    //function homeController($scope, User, Page){
-//    var home = this;
-//    Page.setTitle('Home');
-//    $scope.loginUser = function(){
-//        console.log(home.user.email);
-//        User.login(home.user)
-//            .success(function (data) {
-//                u = home.user;
-//                console.log(u);
-//                id = data;
-//                home.user = {};
-//                window.location.replace('/#/profile');
-//            });
-//    }
-//
-//}
+    // Profile page controller
     class profileController{
         static $inject = ['$scope','userService','pageService'];
         private User;
@@ -149,23 +119,7 @@ module comicSans {
 
         }
     }
-
-
-
-
-    //function profileController($scope, User, Page){
-//    var profile = this;
-//    console.log(id);
-//    Page.setTitle('Profile');
-//    User.view(id)
-//        .success(function(data){
-//            profile.user = data;
-//            console.log(profile.user.preferences);
-//        });
-//    $scope.createComic = function(){
-//        window.location.replace('/#/create');
-//    }
-//}
+    // Service for signup, login and view users
     class userService{
         static $inject = ['$http'];
         constructor(private $http: ng.IHttpService){
@@ -184,7 +138,7 @@ module comicSans {
         }
 
     }
-
+    // Service that helps set title to pages so that they appear at the top of the page
     class pageService{
         static $inject = ['$http'];
         private title : string;
@@ -211,64 +165,3 @@ module comicSans {
         .service('pageService', pageService)
         .config(routes);
 }
-
-
-//angular.module('comicSans', ['userService','pageService','ngRoute'])
-//
-//    .config(['$routeProvider', function($routeProvider) {
-//        $routeProvider
-//            .when('/signup', {templateUrl: 'signup.html',   controller: 'signupController as signUp'})
-//            .when('/home', {templateUrl:'home.html', controller:'homeController as home'})
-//
-//            .when('/profile', {templateUrl:'profile.html', controller:'profileController as profile'})
-//
-//            .when('/create', {templateUrl:'create.html', controller:'createController as create'})
-//            .otherwise({redirectTo: '/home'});
-//    }]);
-//var id;
-//var u;
-//
-//function MainCtrl($scope, Page, User) {
-//    var main = this;
-//    console.log('MainCtrl loaded!');
-//    $scope.Page = Page;
-//    $scope.User = User;
-//
-//}
-//
-//
-//
-
-//
-//function createController($scope, Comic, Page) {
-//    Page.setTitle("New Comic");
-//    $scope.createComic = function() {
-//        console.log($scope.formData);
-//        // validate the formData to make sure that something is there
-//        // if form is empty, nothing will happen
-//        Comic.create($scope.formData)
-//            .success(function(data) {
-//                window.location.replace('/#/home');
-//                //$scope.formData = {}; // clear the form so our user is ready to enter another
-//
-//                });
-//        }
-//}
-//
-//
-//function homeController($scope, User, Page){
-//    var home = this;
-//    Page.setTitle('Home');
-//    $scope.loginUser = function(){
-//        console.log(home.user.email);
-//        User.login(home.user)
-//            .success(function (data) {
-//                u = home.user;
-//                console.log(u);
-//                id = data;
-//                home.user = {};
-//                window.location.replace('/#/profile');
-//            });
-//    }
-//
-//}
