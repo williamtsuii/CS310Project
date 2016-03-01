@@ -60,7 +60,8 @@ module.exports = function (app) {
                 uUniqueDB.set({
                     "preferences": req.body.preferences,
                     "username": req.body.name,
-                    "editor": req.body.editor
+                    "editor": req.body.editor,
+                    "favourites": {}
                 });
                 login(req, res);
             }
@@ -114,6 +115,7 @@ module.exports = function (app) {
     app.post('/comic/createcomic', function (req, res, authData) {
         var comicID = req.path;
         var userID = authData.uid;
+        var username = authData.username;
         
 
         Comic.create({

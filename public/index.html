@@ -100,22 +100,32 @@
 
 	<script type=text/ng-template id=profile.html>
 		<div class="container" >
-			<h1>Welcome <span> {{abc.username}}</span>!</h1>
-			<p>Your preferences Are: <span> {{abc.preferences}}</span></p>
-			<button class="btn btn-default" ng-show="abc.editor" ng-click="profile.createComic()">Create Comic</button>
+			<h1>Welcome <span> {{uProfile.username}}</span>!</h1>
+			<p>Your preferences Are: <span> {{uProfile.preferences}}</span></p>
+			<button class="btn btn-default" ng-show="uProfile.editor" ng-click="profile.createComic()">Create Comic</button>
 		</div>
 
 	</script>
 
 
 	<script type=text/ng-template id=create.html>
-		<div id="container">
+		<div class="container">
 			<div ng-repeat="step in stepsModel">
 				<img class="thumb" ng-src="{{step}}" />
 			</div>
 
 			<input type='file' ng-model-instant onchange="angular.element(this).scope().imageUpload(event)" multiple />
+
+			<form ng-submit="create.submit(create.form)" class="form signup-form" role="form">
+				<div class="form-group">
+					<label for="title">Title:</label>
+					<input type="text" class="form-control" id="title" ng-model="create.form.title">
+				</div>
+				<button type="submit" class="btn btn-default">Create</button>
+			</form>
+
 		</div>
+
 
 	</script>
 </div>
