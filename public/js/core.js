@@ -83,8 +83,12 @@ var comicSans;
             });
         };
         profileController.prototype.createComic = function () {
-            this.Comic.newComic();
-            window.location.replace('/#/create');
+            this.Comic.newComic()
+                .success(function (data) {
+                console.log('hello');
+                window.localStorage.setItem('comicId', data);
+                window.location.replace('/#/create');
+            });
         };
         profileController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return profileController;
@@ -92,7 +96,6 @@ var comicSans;
     // Controller for creating comics
     var createController = (function () {
         function createController($scope, User, Page, Comic) {
-            this.Private = Comic;
             $scope.Page.setTitle('Create Comics');
             console.log('createController loaded!');
             $scope.create = this;
@@ -109,14 +112,14 @@ var comicSans;
         function comicService($http) {
             this.$http = $http;
         }
-        comicService.prototype.makeComic = function (comicData) {
-            return this.$http.post('/comic/createcomic/' + comicData);
+        comicService.prototype.makeComic = function () {
+            return this.$http.post('/comic/createcomic/:comicId', "o");
         };
         comicService.prototype.viewComic = function (comicId) {
             return this.$http.get('/comic/view/:comicID/' + comicId);
         };
         comicService.prototype.newComic = function () {
-            return this.$http.get('/comic/newcomic/');
+            return this.$http.get('/comic/newcomic');
         };
         comicService.$inject = ['$http'];
         return comicService;

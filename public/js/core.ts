@@ -103,16 +103,19 @@ module comicSans {
                 });
         }
         createComic(){
-            this.Comic.newComic();
-            window.location.replace('/#/create');
+            this.Comic.newComic()
+                .success(function(data){
+                    console.log('hello');
+                    window.localStorage.setItem('comicId',data);
+                    window.location.replace('/#/create');
+                });
         }
-
     }
 
     // Controller for creating comics
     class createController{
         static $inject = ['$scope','userService','pageService', 'comicService'];
-        Private Comic;
+        private Comic;
         constructor($scope, User: userService,Page: pageService, Comic: comicService){
             $scope.Page.setTitle('Create Comics');
             console.log('createController loaded!');
@@ -129,14 +132,14 @@ module comicSans {
         static $inject = ['$http'];
         constructor(private $http: ng.IHttpService){
         }
-        makeComic(comicData:any): ng.IPromise<any>{
-            return this.$http.post('/comic/createcomic/' + comicData);
+        makeComic(): ng.IPromise<any>{
+            return this.$http.post('/comic/createcomic/:comicId', "o");
         }
         viewComic(comicId:any):ng.IPromise<any>{
             return this.$http.get('/comic/view/:comicID/'+ comicId);
         }
         newComic():ng.IPromise<any>{
-            return this.$http.get('/comic/newcomic/');
+            return this.$http.get('/comic/newcomic');
         }
     }
 
