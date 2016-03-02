@@ -10,9 +10,12 @@
 	<title>{{Page.getTitle()}}</title>
 
 	<!-- SCROLLS -->
+	<link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="style/style.css">
+
+
 	<style>
 		html 					{ overflow-y:scroll; }
 		body 					{ padding-top:50px; }
@@ -30,7 +33,7 @@
 
 </head>
 <!-- SET THE CONTROLLER -->
-<body>
+
 <body>
 <nav class="navbar navbar-default navbar-fixed-top page-bar">
 	<div class="container-fluid">
@@ -40,7 +43,7 @@
 	</div>
 </nav>
 
-<div>
+
 
 	<ng-view>Loading...</ng-view>
 
@@ -75,26 +78,72 @@
 	</script>
 
 	<script type=text/ng-template id=home.html>
-		<div class="container" >
-			<div class="jumbotron main-header">
-				<h1>Comic Sans</h1>
+
+			<div class="jumbotron" style="font-family: 'Architects Daughter', cursive;">
+				<h1 style="font-family: 'Architects Daughter', cursive;">Comic Sans</h1>
 			</div>
-			<h1> Login to read or create comic strips!</h1>
+			<h1 style="font-family: 'Architects Daughter', cursive;"> Login to read or create comic strips!</h1>
 			<br>
-			<form ng-submit="home.submit(home.u)" class="form login-form" role="form">
-				<div class="form-group">
-					<label for="email">Email address:</label>
-					<input type="email" class="form-control" id="userEmail" ng-model="home.u.email">
+			<div class="container">
+				<div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+					<div class="panel panel-info " style="border-color:#ff9999;" >
+						<div class="panel-heading" style="background-color: #ff9999; color:#e60000; ">
+							<div class="panel-title">Sign On</div>
+						</div>
+
+						<div style="padding-top:30px" class="panel-body" >
+
+							<div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+
+							<form ng-submit="home.submit(home.u)" id="loginform" class="form-horizontal" role="form">
+
+								<div style="margin-bottom: 25px" class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+									<input ng-model="home.u.email" id="login-username" type="text" class="form-control" name="username" value="" placeholder="email">
+								</div>
+
+								<div style="margin-bottom: 25px" class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+									<input ng-model="home.u.password" id="login-password" type="password" class="form-control" name="password" placeholder="password">
+								</div>
+								<div style="margin-top:10px" class="form-group">
+									<!-- Button -->
+
+									<div class="col-sm-12 controls">
+										<button type="submit" id="btn-login" class="btn btn-success">Login  </button>
+
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12 control">
+										<div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
+											Don't have an account!
+											<a href="#/signup">
+												Sign Up Here
+											</a>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
 				</div>
-				<div class="form-group">
-					<label for="pwd">Password:</label>
-					<input type="password" class="form-control" id="userPwd" ng-model="home.u.password">
-				</div>
-				<button type="submit" class="btn btn-default login-button" >Login</button>
-			</form>
-			<br>
-			<p> Don't have an account? Sign up <span><a href="#/signup">here!</a></span></p>
-		</div>
+			</div>
+
+			<!--<form ng-submit="home.submit(home.u)" class="form login-form" role="form">-->
+				<!--<div class="form-group">-->
+					<!--<label for="email">Email address:</label>-->
+					<!--<input type="email" class="form-control" id="userEmail" ng-model="home.u.email">-->
+				<!--</div>-->
+				<!--<div class="form-group">-->
+					<!--<label for="pwd">Password:</label>-->
+					<!--<input type="password" class="form-control" id="userPwd" ng-model="home.u.password">-->
+				<!--</div>-->
+				<!--<button type="submit" class="btn btn-default login-button" >Login</button>-->
+			<!--</form>-->
+			<!--<br>-->
+			<!--<p> Don't have an account? Sign up <span><a href="#/signup">here!</a></span></p>-->
+
 
 	</script>
 
@@ -118,7 +167,7 @@
 		</div>
 
 	</script>
-</div>
+
 </body>
 
 </html>
