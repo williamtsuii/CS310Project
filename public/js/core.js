@@ -112,8 +112,8 @@ var comicSans;
         function comicService($http) {
             this.$http = $http;
         }
-        comicService.prototype.makeComic = function () {
-            return this.$http.post('/comic/createcomic/:comicId', "o");
+        comicService.prototype.makeComic = function (comicData) {
+            return this.$http.post('/comic/createcomic/' + window.localStorage.getItem('comicId'), comicData);
         };
         comicService.prototype.viewComic = function (comicId) {
             return this.$http.get('/comic/view/:comicID/' + comicId);

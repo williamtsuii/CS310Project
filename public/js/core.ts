@@ -132,8 +132,8 @@ module comicSans {
         static $inject = ['$http'];
         constructor(private $http: ng.IHttpService){
         }
-        makeComic(): ng.IPromise<any>{
-            return this.$http.post('/comic/createcomic/:comicId', "o");
+        makeComic(comicData: any): ng.IPromise<any>{
+            return this.$http.post('/comic/createcomic/'+ window.localStorage.getItem('comicId'), comicData);
         }
         viewComic(comicId:any):ng.IPromise<any>{
             return this.$http.get('/comic/view/:comicID/'+ comicId);
