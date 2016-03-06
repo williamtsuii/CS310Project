@@ -60,7 +60,8 @@ module.exports = function (app) {
                 uUniqueDB.set({
                     "preferences": req.body.preferences,
                     "username": req.body.name,
-                    "editor": req.body.editor
+                    "editor": req.body.editor,
+                    "favourites": {}
                 });
                 login(req, res);
             }
@@ -107,13 +108,15 @@ module.exports = function (app) {
      // view+create comics -------------------------------------------------------------
     /* GET New Comic Page. */
     app.get('/comic/newcomic', function (req, res) {
-        var comicID;
+        var comicID = 'id-' + Math.random().toString(36).substr(2, 16);
         res.send(comicID);
-    });    
+    });
+
     /* POST to Create Comic Service. */
-    app.post('/comic/createcomic', function (req, res, authData) {
-        var comicID = req.path;
+    app.post('/comic/createcomic/:comicId', function (req, res, authData) {
+        var comicID = req.params.comicId;
         var userID = authData.uid;
+        var username = authData.username;
         
 
         Comic.create({
@@ -139,8 +142,8 @@ module.exports = function (app) {
     /* GET Comic View Page */
     app.get('/comic/view/:comicID', function (req, res) {
         var comicID = req.params.comicID;
-        
-        Comic.findOne({"id": comicID}, function(err, Comic) { 
+
+        Comic.findOne({"id": comicID}, function(err, Comic) {
           if (err) {
             console.log(err);
           } else {
@@ -163,7 +166,7 @@ module.exports = function (app) {
     //});
 
 
-    // application -------------------------------------------------------------
+    //// application -------------------------------------------------------------
     app.get('*', function (req, res) {
         res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
     });

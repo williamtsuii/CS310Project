@@ -44,15 +44,7 @@ var comicSans;
         signupController.$inject = ['$scope', 'userService', 'pageService'];
         return signupController;
     })();
-    // Controller for creating comics
-    var createController = (function () {
-        function createController($scope, User, Page) {
-            $scope.Page.setTitle('Sign Up');
-        }
-        createController.$inject = ['$scope', 'userService', 'pageService'];
-        return createController;
-    })();
-    //Constroller for homepage which also has login
+    //Controller for homepage which also has login
     var homeController = (function () {
         function homeController($scope, User, Page) {
             $scope.home = this;
@@ -66,6 +58,11 @@ var comicSans;
                 this.u = a;
                 window.localStorage.setItem('id', data);
                 window.location.replace('/#/profile');
+                console.log('success');
+            })
+                .error(function (data) {
+                console.log('hello');
+                alert("error");
             });
         };
         homeController.$inject = ['$scope', 'userService', 'pageService'];
@@ -73,33 +70,64 @@ var comicSans;
     })();
     // Profile page controller
     var profileController = (function () {
-        function profileController($scope, User, Page) {
+        function profileController($scope, User, Page, Comic) {
             $scope.profile = this;
             console.log('profileController loaded!');
             $scope.Page.setTitle('Profile');
             this.User = User;
+            this.Comic = Comic;
             this.viewProfile(window.localStorage.getItem('id'), $scope);
-            console.log($scope.abc);
         }
-        profileController.prototype.viewProfile = function (s, $scope) {
+        profileController.prototype.viewProfile = function (id, $scope) {
             //console.log('viewProfile');
             //console.log(s);
             var that = this;
-            this.User.view(s)
+            this.User.view(id)
                 .success(function (data) {
-                console.log(data);
-                $scope.abc = data;
-                console.log($scope.abc);
-                //return data;
+                $scope.uProfile = data;
             });
         };
         profileController.prototype.createComic = function () {
-            window.location.replace('/#/create');
+            this.Comic.newComic()
+                .success(function (data) {
+                console.log('hello');
+                window.localStorage.setItem('comicId', data);
+                window.location.replace('/#/create');
+            });
         };
-        profileController.prototype.setU = function (a) {
-        };
-        profileController.$inject = ['$scope', 'userService', 'pageService'];
+        profileController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return profileController;
+    })();
+    // Controller for creating comics
+    var createController = (function () {
+        function createController($scope, User, Page, Comic) {
+            $scope.Page.setTitle('Create Comics');
+            console.log('createController loaded!');
+            $scope.create = this;
+            this.Comic = Comic;
+        }
+        createController.prototype.submit = function (form) {
+            console.log(form);
+            this.Comic.makeComic(form);
+        };
+        createController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
+        return createController;
+    })();
+    var comicService = (function () {
+        function comicService($http) {
+            this.$http = $http;
+        }
+        comicService.prototype.makeComic = function (comicData) {
+            return this.$http.post('/comic/createcomic/' + window.localStorage.getItem('comicId'), comicData);
+        };
+        comicService.prototype.viewComic = function (comicId) {
+            return this.$http.get('/comic/view/:comicID/' + comicId);
+        };
+        comicService.prototype.newComic = function () {
+            return this.$http.get('/comic/newcomic');
+        };
+        comicService.$inject = ['$http'];
+        return comicService;
     })();
     // Service for signup, login and view users
     var userService = (function () {
@@ -138,8 +166,10 @@ var comicSans;
         .controller('homeController', homeController)
         .controller('signupController', signupController)
         .controller('profileController', profileController)
+        .controller('createController', createController)
         .service('userService', userService)
         .service('pageService', pageService)
+        .service('comicService', comicService)
         .config(routes);
 })(comicSans || (comicSans = {}));
 //# sourceMappingURL=core.js.map
