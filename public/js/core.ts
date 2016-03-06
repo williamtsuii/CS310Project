@@ -75,8 +75,13 @@ module comicSans {
                     this.u = a;
                     window.localStorage.setItem('id',data);
                     window.location.replace('/#/profile');
+                    console.log('success');
 
-                });
+                })
+            .error(function(data){
+                console.log('hello');
+                alert("error");
+            });
             }
 
     }
