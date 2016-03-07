@@ -24,12 +24,19 @@
 	</style>
 
 	<!-- SPELLS -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script><!-- load angular -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script><!-- load angular -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-route.js"></script>
+
+	<!-- ng-tags-inputs-->
+	<script src="./js/services/ng-tags-input.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/ng-tags-input.css">
 
 	<script src="js/services/page.js"></script>
 	<script src="js/services/todos.js"></script> <!-- load our todo service -->
 	<script src="js/core.js"></script> <!-- load our main application -->
+
+
+
 
 </head>
 <!-- SET THE CONTROLLER -->
@@ -157,6 +164,12 @@
 	</script>
 
 
+
+
+
+
+
+
 	<script type=text/ng-template id=create.html>
 		<div class="container">
 			<div ng-repeat="step in stepsModel">
@@ -170,14 +183,21 @@
 					<label for="title">Title:</label>
 					<input type="text" class="form-control" id="title" ng-model="create.form.title">
 				</div>
-				<button class="btn btn-default" ng-click="create.addFacourite()">Favourite</button>
+				<button class="btn btn-default" ng-click="create.addFavourite()">Favourite</button>
 				<button type="submit" class="btn btn-default">Create</button>
+
+					<br>
+					<label for="tags">Tags:</label>
+					<tags-input ng-model="tags"></tags-input>
 			</form>
 
+		
+
 		</div>
-
-
 	</script>
+
+
+
 
 </body>
 
