@@ -117,7 +117,17 @@ module.exports = function (app) {
         var comicID = req.params.comicId;
         var userID = authData.uid;
         var username = authData.username;
-        
+        // pushing tags into an array of strings
+        var jsontags = req.body.tags;
+        var length = jsontags.length;
+        var arrayoftags = [];
+        console.log("Length of jsonarray="+length);
+        for (i=0; i<jsontags.length;i++) {
+            var tag = jsontags[i];
+            arrayoftags.push(tag.text);
+        }
+           
+          // console.log("Array of tags in string!: " + tagarray);
 
         Comic.create({
             "image": {},
@@ -126,17 +136,17 @@ module.exports = function (app) {
             "title": req.body.title,
             "collaborators": req.body.collabs,
             "synopsis": req.body.about,
+            "tags": arrayoftags,
             "hidden" : req.body.hidden
         }, function (err, comic) {
             if (err)
                 res.send(err);
             else {
                 console.log("comic " + req.body.title + " added");
+                console.log("tags associated with comic: " + arrayoftags);
                 res.redirect('/home');
             }
         });
-
-
     });
 
     /* GET Comic View Page */
