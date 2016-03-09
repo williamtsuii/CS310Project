@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular.d.ts" />
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular-route.d.ts" />
+/// <reference path="../../types/DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 
 // Main module for the app
 
