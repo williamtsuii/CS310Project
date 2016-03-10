@@ -5,8 +5,24 @@ var refRoot = new Firebase(database.firebase);
 //var comicDB = new Comic(database.url);
 var fs = require('fs');
 
+//03/09/2016
+var mongoose = require('mongoose');
+var db=mongoose.createConnection('mongodb://william1:asdfjkl1@ds011409.mlab.com:11409/comicsans');
 
-/*
+var schema = new mongoose.Schema({
+   image: { data: Buffer, contentType: String },
+   id: String,
+   title: String,
+   author: { uid: String, username: String },
+   collaborators: [{ uid: String, username: String }],
+   synopsis: String,
+   tags: [String],
+   comments: [{ body: String, date: Date, user: String }],
+   date: { type: Date, default: Date.now },
+   hidden: Boolean
+});
+
+
 function getTodos(res) {
     Todo.find(function (err, todos) {
 
@@ -17,7 +33,7 @@ function getTodos(res) {
         res.json(todos); // return all todos in JSON format
     });
 };
-*/
+
 function login(req, res) {
 
     var userDB = refRoot;
@@ -121,14 +137,13 @@ module.exports = function (app) {
         var jsontags = req.body.tags;
         var length = jsontags.length;
         var arrayoftags = [];
-        console.log("Length of jsonarray="+length);
+        //console.log("Length of jsonarray="+length);
         for (i=0; i<jsontags.length;i++) {
             var tag = jsontags[i];
             arrayoftags.push(tag.text);
-        }
-           
-          // console.log("Array of tags in string!: " + tagarray);
-
+        }          
+        // console.log("Array of tags in string!: " + tagarray);
+        /*
         Comic.create({
             "image": {},
             "id": comicID,
@@ -143,10 +158,34 @@ module.exports = function (app) {
                 res.send(err);
             else {
                 console.log("comic " + req.body.title + " added");
-                console.log("tags associated with comic: " + arrayoftags);
                 res.redirect('/home');
             }
         });
+        console.log(Comic);
+      */
+
+      var comicProperties = ({
+         "image": {},
+         "id": comicID,
+         "author": {"uid": userID, "username" : username},
+         "title": req.body.title,
+         "collaborators": req.body.collabs,
+         "synopsis": req.body.about,
+         "tags": arrayoftags,
+         "hidden" : req.body.hidden
+      });
+      console.log("This is comicProperties: " + comicProperties);
+
+      var ComicSans = mongoose.model('comic-sans', schema);
+      var comicToSave = new ComicSans(comicProperties);
+      comicToSave.save(function (err) {
+         if (err) return handleError(err);
+
+         console.log(comicToSave);
+      });
+            
+      ComicSans.remove(schema);
+
     });
 
     /* GET Comic View Page */
@@ -162,6 +201,14 @@ module.exports = function (app) {
           }
         });
     });
+
+    /* GET Search Page*/
+    app.get('/comic/search/', function(req, res) {
+        var searchTerm = req.body.searchterm;
+        console.log(searchTerm);
+        res.send(searchTerm);
+    });
+
 
     //app.upload('comic/upload', function (req, res, authData) {
     //    var comicID = req.path;
