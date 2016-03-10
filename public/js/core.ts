@@ -237,10 +237,7 @@ module comicSans {
 
     angular
         .module('comicSans', ['ngRoute', 'ngTagsInput'])
-<<<<<<< HEAD
 
-=======
->>>>>>> william
         .controller('MainCtrl', MainCtrl)
         .controller('homeController', homeController)
         .controller('signupController', signupController)
@@ -254,9 +251,7 @@ module comicSans {
         .config(routes);
 
 
-<<<<<<< HEAD
+
 }
 
-=======
-}
->>>>>>> william
+

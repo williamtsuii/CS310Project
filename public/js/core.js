@@ -130,8 +130,6 @@ var comicSans;
         createController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return createController;
     }());
-<<<<<<< HEAD
-=======
     var searchController = (function () {
         function searchController($scope, Page, Comic, Search) {
             $scope.search = this;
@@ -164,7 +162,6 @@ var comicSans;
         searchService.$inject = ['$http'];
         return searchService;
     }());
->>>>>>> william
     var comicService = (function () {
         function comicService($http) {
             this.$http = $http;
