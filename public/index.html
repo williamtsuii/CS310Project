@@ -24,12 +24,19 @@
 	</style>
 
 	<!-- SPELLS -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script><!-- load angular -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script><!-- load angular -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-route.js"></script>
+
+	<!-- ng-tags-inputs-->
+	<script src="./js/services/ng-tags-input.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/ng-tags-input.css">
 
 	<script src="js/services/page.js"></script>
 	<script src="js/services/todos.js"></script> <!-- load our todo service -->
 	<script src="js/core.js"></script> <!-- load our main application -->
+
+
+
 
 </head>
 <!-- SET THE CONTROLLER -->
@@ -40,6 +47,17 @@
 		<div class="navbar-header">
 			<a class="navbar-brand" href="#">{{Page.getTitle()}}</a>
 		</div>
+
+
+		<div class="col-lg-2 pull-right" ng-controller="searchController"><!--search on nav bar-->
+		<form ng-submit="search.submit(search.formData)" class="navbar-form search-form" role="search"> <!-- note, need to change the ng-submit probably-->
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="Search comics" ng-model="search.formData" id="searchterm">
+				<div class="input-group-btn">
+					<button class="btn btn-default search-button" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+				</div>
+			</div>
+		</form>
 	</div>
 </nav>
 
@@ -49,7 +67,6 @@
 
 
 	<script type=text/ng-template id=signup.html>
-
 		<div class="container" >
 			<form ng-submit="signup.submit(signup.formData)" class="form signup-form" role="form">
 				<div style="margin-bottom: 25px; margin-top: 25px;" class="input-group">
@@ -73,12 +90,10 @@
 				</div>
 				<button type="submit" class="btn btn-default signup-button">Submit</button>
 			</form>
-
 		</div>
 	</script>
 
 	<script type=text/ng-template id=home.html>
-
 			<div class="jumbotron" style="font-family: 'Architects Daughter', cursive;">
 				<h1 style="font-family: 'Architects Daughter', cursive;">Comic Sans</h1>
 			</div>
@@ -156,28 +171,63 @@
 
 	</script>
 
+<<<<<<< HEAD
 
+
+
+
+
+
+
+=======
+>>>>>>> william
 	<script type=text/ng-template id=create.html>
 		<div class="container">
 			<div ng-repeat="step in stepsModel">
 				<img class="thumb" ng-src="{{step}}" />
 			</div>
-
 			<input type='file' ng-model-instant onchange="angular.element(this).scope().imageUpload(event)" multiple />
-
+		<div class="comicProperties" style="width:800px; margin:0 auto;">
 			<form ng-submit="create.submit(create.form)" class="form signup-form" role="form">
 				<div class="form-group">
 					<label for="title">Title:</label>
-					<input type="text" class="form-control" id="title" ng-model="create.form.title">
+					<input type="text" class="form-control" id="title" ng-model="create.form.title" placeholder="Comic title">
 				</div>
-				<button class="btn btn-default" ng-click="create.addFacourite()">Favourite</button>
+
+				<div class=form-group> <!--tags-->
+					<label for="tags">Tags:</label>
+					<tags-input id="tags" ng-model="create.form.tags" min-length="3" max-length="10" add-on-space=true></tags-input>
+				</div>
+				<button class="btn btn-default" ng-click="create.addFavourite()">Favourite</button>
 				<button type="submit" class="btn btn-default">Create</button>
+
+					<br>
+					<label for="tags">Tags:</label>
+					<tags-input ng-model="tags"></tags-input>
 			</form>
+<<<<<<< HEAD
+
+		
 
 		</div>
-
-
 	</script>
+
+
+
+=======
+		</div>
+		</div>
+	</script>
+
+	<script type=text/ng-template id=search.html>
+		<div class="container">
+
+
+		</div>
+	</script>
+>>>>>>> william
+
+
 
 </body>
 

@@ -1,5 +1,6 @@
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular.d.ts" />
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular-route.d.ts" />
+/// <reference path="../../types/DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 // Main module for the app
 var comicSans;
 (function (comicSans) {
@@ -10,6 +11,7 @@ var comicSans;
             .when('/home', { templateUrl: 'home.html', controller: 'homeController as home' })
             .when('/profile', { templateUrl: 'profile.html', controller: 'profileController as profile' })
             .when('/create', { templateUrl: 'create.html', controller: 'createController as create' })
+            .when('/search', { templateUrl: 'search.html', controller: 'searchController as search' }) // William-- NOTE TO SELF: created 03/09/2016 
             .otherwise({ redirectTo: '/home' });
     }
     // MainCtrl that loads when the app loads
@@ -22,7 +24,7 @@ var comicSans;
         }
         MainCtrl.$inject = ['$scope', 'userService', 'pageService'];
         return MainCtrl;
-    })();
+    }());
     // Controller for when user goes to signup page. Uses userService and pageService. Sets the page name to 'Sign Up'
     // and on click on submit button saves the id in local storage and redirects user to their profile.
     var signupController = (function () {
@@ -43,7 +45,7 @@ var comicSans;
         };
         signupController.$inject = ['$scope', 'userService', 'pageService'];
         return signupController;
-    })();
+    }());
     //Controller for homepage which also has login
     var homeController = (function () {
         function homeController($scope, User, Page) {
@@ -67,7 +69,7 @@ var comicSans;
         };
         homeController.$inject = ['$scope', 'userService', 'pageService'];
         return homeController;
-    })();
+    }());
     // Profile page controller
     var profileController = (function () {
         function profileController($scope, User, Page, Comic) {
@@ -97,7 +99,7 @@ var comicSans;
         };
         profileController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return profileController;
-    })();
+    }());
     // Controller for creating comics
     var createController = (function () {
         function createController($scope, User, Page, Comic) {
@@ -110,9 +112,56 @@ var comicSans;
             console.log(form);
             this.Comic.makeComic(form);
         };
+        createController.prototype.tag = function (form) {
+            $("#tags").tagit({
+                availableTags: availableTags,
+                autocomplete: { delay: 0, minLength: 1 },
+                beforeTagAdded: function (event, ui) {
+                    if ($.inArray(ui.tagLabel, availableTags) < 0) {
+                        $('#error').show();
+                        return false;
+                    }
+                    else {
+                        $('#error').hide();
+                    }
+                }
+            });
+        };
         createController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return createController;
-    })();
+    }());
+    var searchController = (function () {
+        function searchController($scope, Page, Comic, Search) {
+            $scope.search = this;
+            $scope.Page.setTitle("Comic search");
+            console.log("searchController loaded!");
+            this.Keyword = Search;
+        }
+        searchController.prototype.submit = function (search) {
+            console.log(search);
+            this.Keyword.searchAllComics(search)
+                .success(function (data) {
+                console.log("submitting search term is successful");
+                window.localStorage.setItem('searchTerm', data);
+                window.location.replace('/#/search');
+            });
+        };
+        searchController.$inject = ['$scope', 'pageService', 'comicService', 'searchService'];
+        return searchController;
+    }());
+    var searchService = (function () {
+        function searchService($http) {
+            this.$http = $http;
+        }
+        searchService.prototype.viewSearch = function (text) {
+            return this.$http.post('/comic/search/', text);
+        };
+        searchService.prototype.searchAllComics = function (searchTerm) {
+            return this.$http.get('/comic/search' + "/" + searchTerm);
+        };
+        searchService.$inject = ['$http'];
+        return searchService;
+    }());
     var comicService = (function () {
         function comicService($http) {
             this.$http = $http;
@@ -128,7 +177,7 @@ var comicSans;
         };
         comicService.$inject = ['$http'];
         return comicService;
-    })();
+    }());
     // Service for signup, login and view users
     var userService = (function () {
         function userService($http) {
@@ -145,7 +194,7 @@ var comicSans;
         };
         userService.$inject = ['$http'];
         return userService;
-    })();
+    }());
     // Service that helps set title to pages so that they appear at the top of the page
     var pageService = (function () {
         function pageService() {
@@ -159,17 +208,18 @@ var comicSans;
         };
         pageService.$inject = ['$http'];
         return pageService;
-    })();
+    }());
     angular
-        .module('comicSans', ['ngRoute'])
+        .module('comicSans', ['ngRoute', 'ngTagsInput'])
         .controller('MainCtrl', MainCtrl)
         .controller('homeController', homeController)
         .controller('signupController', signupController)
         .controller('profileController', profileController)
         .controller('createController', createController)
+        .controller('searchController', searchController)
+        .service('searchService', searchService)
         .service('userService', userService)
         .service('pageService', pageService)
         .service('comicService', comicService)
         .config(routes);
 })(comicSans || (comicSans = {}));
-//# sourceMappingURL=core.js.map
