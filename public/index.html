@@ -47,12 +47,14 @@
 		<div class="navbar-header">
 			<a class="navbar-brand" href="#">{{Page.getTitle()}}</a>
 		</div>
-		<div class="col-lg-2 pull-right"><!--search on nav bar-->
-		<form ng-submit="comic.search(search.form)" class="navbar-form search-form" role="search"> <!-- note, need to change the ng-submit probably-->
+
+
+		<div class="col-lg-2 pull-right" ng-controller="searchController"><!--search on nav bar-->
+		<form ng-submit="search.submit(search.formData)" class="navbar-form search-form" role="search"> <!-- note, need to change the ng-submit probably-->
 			<div class="input-group">
-				<input type="text" class="form-control" placeholder="Search comics" ng-model="search.form.searchterm" id="searchterm">
+				<input type="text" class="form-control" placeholder="Search comics" ng-model="search.formData" id="searchterm">
 				<div class="input-group-btn">
-					<button class="btn btn-default" type="Submit"><i class="glyphicon glyphicon-search"></i></button>
+					<button class="btn btn-default search-button" type="submit"><i class="glyphicon glyphicon-search"></i></button>
 				</div>
 			</div>
 		</form>

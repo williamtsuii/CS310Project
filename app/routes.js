@@ -8,7 +8,6 @@ var fs = require('fs');
 //03/09/2016
 var mongoose = require('mongoose');
 var db=mongoose.createConnection('mongodb://william1:asdfjkl1@ds011409.mlab.com:11409/comicsans');
-
 var schema = new mongoose.Schema({
    image: { data: Buffer, contentType: String },
    id: String,
@@ -21,6 +20,7 @@ var schema = new mongoose.Schema({
    date: { type: Date, default: Date.now },
    hidden: Boolean
 });
+var ComicSans = mongoose.model('comic-sans', schema); //model
 
 
 function getTodos(res) {
@@ -174,9 +174,8 @@ module.exports = function (app) {
          "tags": arrayoftags,
          "hidden" : req.body.hidden
       });
-      console.log("This is comicProperties: " + comicProperties);
 
-      var ComicSans = mongoose.model('comic-sans', schema);
+
       var comicToSave = new ComicSans(comicProperties);
       comicToSave.save(function (err) {
          if (err) return handleError(err);
@@ -184,7 +183,7 @@ module.exports = function (app) {
          console.log(comicToSave);
       });
             
-      ComicSans.remove(schema);
+     
 
     });
 
@@ -202,12 +201,17 @@ module.exports = function (app) {
         });
     });
 
-    /* GET Search Page*/
+    /* GET Search Tag Page*/
     app.get('/comic/search/', function(req, res) {
         var searchTerm = req.body.searchterm;
-        console.log(searchTerm);
         res.send(searchTerm);
     });
+    /* POST Search Tag Page*/
+    app.post('comic/search/:searchTerm', function(req, res) {
+      var tag = req.params.searchTerm;
+      console.log("Finding all mongo docs:"+ComicSans.find());
+
+     });
 
 
     //app.upload('comic/upload', function (req, res, authData) {
