@@ -1,5 +1,6 @@
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular.d.ts" />
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular-route.d.ts" />
+/// <reference path="../../types/DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 // Main module for the app
 var comicSans;
 (function (comicSans) {
@@ -10,6 +11,7 @@ var comicSans;
             .when('/home', { templateUrl: 'home.html', controller: 'homeController as home' })
             .when('/profile', { templateUrl: 'profile.html', controller: 'profileController as profile' })
             .when('/create', { templateUrl: 'create.html', controller: 'createController as create' })
+            .when('/search', { templateUrl: 'search.html', controller: 'searchController as search' }) // William-- NOTE TO SELF: created 03/09/2016 
             .otherwise({ redirectTo: '/home' });
     }
     // MainCtrl that loads when the app loads
@@ -128,6 +130,41 @@ var comicSans;
         createController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return createController;
     }());
+<<<<<<< HEAD
+=======
+    var searchController = (function () {
+        function searchController($scope, Page, Comic, Search) {
+            $scope.search = this;
+            $scope.Page.setTitle("Comic search");
+            console.log("searchController loaded!");
+            this.Keyword = Search;
+        }
+        searchController.prototype.submit = function (search) {
+            console.log(search);
+            this.Keyword.searchAllComics(search)
+                .success(function (data) {
+                console.log("submitting search term is successful");
+                window.localStorage.setItem('searchTerm', data);
+                window.location.replace('/#/search');
+            });
+        };
+        searchController.$inject = ['$scope', 'pageService', 'comicService', 'searchService'];
+        return searchController;
+    }());
+    var searchService = (function () {
+        function searchService($http) {
+            this.$http = $http;
+        }
+        searchService.prototype.viewSearch = function (text) {
+            return this.$http.post('/comic/search/', text);
+        };
+        searchService.prototype.searchAllComics = function (searchTerm) {
+            return this.$http.get('/comic/search' + "/" + searchTerm);
+        };
+        searchService.$inject = ['$http'];
+        return searchService;
+    }());
+>>>>>>> william
     var comicService = (function () {
         function comicService($http) {
             this.$http = $http;
@@ -182,6 +219,8 @@ var comicSans;
         .controller('signupController', signupController)
         .controller('profileController', profileController)
         .controller('createController', createController)
+        .controller('searchController', searchController)
+        .service('searchService', searchService)
         .service('userService', userService)
         .service('pageService', pageService)
         .service('comicService', comicService)

@@ -1,5 +1,7 @@
+
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular.d.ts" />
 /// <reference path="../../types/DefinitelyTyped/angularjs/angular-route.d.ts" />
+/// <reference path="../../types/DefinitelyTyped/fabricjs/fabricjs.d.ts" />
 
 // Main module for the app
 
@@ -13,6 +15,7 @@ module comicSans {
             .when('/home', {templateUrl:'home.html', controller:'homeController as home'})
             .when('/profile', {templateUrl:'profile.html', controller:'profileController as profile'})
             .when('/create', {templateUrl:'create.html', controller:'createController as create'})
+            .when('/search', {templateUrl: 'search.html', controller:'searchController as search'}) // William-- NOTE TO SELF: created 03/09/2016 
             .otherwise({redirectTo: '/home'});
     }
 
@@ -118,16 +121,16 @@ module comicSans {
     }
 
     // Controller for creating comics
-    class createController{
-        static $inject = ['$scope','userService','pageService', 'comicService'];
+    class createController {
+        static $inject = ['$scope', 'userService', 'pageService', 'comicService'];
         private Comic;
-        constructor($scope, User: userService,Page: pageService, Comic: comicService){
+        constructor($scope, User: userService, Page: pageService, Comic: comicService) {
             $scope.Page.setTitle('Create Comics');
             console.log('createController loaded!');
             $scope.create = this;
             this.Comic = Comic;
         }
-        submit(form : any){
+        submit(form: any) {
             console.log(form);
             this.Comic.makeComic(form);
         }
@@ -145,6 +148,39 @@ module comicSans {
                 }
             });
 
+        }
+    }
+
+    class searchController {
+        static $inject = ['$scope', 'pageService', 'comicService', 'searchService'];
+        private Keyword;
+        constructor($scope, Page: pageService, Comic: comicService, Search: searchService) {
+            $scope.search = this;
+            $scope.Page.setTitle("Comic search");
+            console.log("searchController loaded!");
+            this.Keyword = Search;
+        }
+        submit(search: string) {
+            console.log(search);
+            this.Keyword.searchAllComics(search)
+                .success(function(data) {
+                console.log("submitting search term is successful");
+                window.localStorage.setItem('searchTerm', data);
+                window.location.replace('/#/search');
+            });
+        }
+
+    }
+
+    class searchService {
+        static $inject = ['$http'];
+        constructor(private $http: ng.IHttpService) {
+        }
+        viewSearch(text:any):ngIPromise<any> {
+            return this.$http.post('/comic/search/', text);
+        }
+        searchAllComics(searchTerm:any): ng.IPromise<any> {
+            return this.$http.get('/comic/search' + "/" + searchTerm);
         }
     }
 
@@ -201,17 +237,26 @@ module comicSans {
 
     angular
         .module('comicSans', ['ngRoute', 'ngTagsInput'])
+<<<<<<< HEAD
 
+=======
+>>>>>>> william
         .controller('MainCtrl', MainCtrl)
         .controller('homeController', homeController)
         .controller('signupController', signupController)
         .controller('profileController', profileController)
         .controller('createController', createController)
+        .controller('searchController', searchController)
+        .service('searchService', searchService)
         .service('userService', userService)
         .service('pageService', pageService)
         .service('comicService', comicService)
         .config(routes);
 
 
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> william
