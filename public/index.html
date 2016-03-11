@@ -66,7 +66,13 @@
 				</div>
 				<div style="margin-bottom: 25px" class="input-group">
 					<span class="input-group-addon"><i class="glyphicon glyphicon-heart"></i></span>
-					<textarea type="text" class="form-control" id="preference" ng-model="signUp.formData.preferences" placeholder="preferences"></textarea>
+	<select name="preferences" multiple class="form-control" id="preference" ng-model="signUp.formData.preferences" placeholder="preferences">
+<option value="comedy">Comedy</option>
+<option value="action">Action</option>
+<option value="horror">Horror</option>
+<option value="romance">Romance</option>
+<option value="drama">Drama</option>
+</select>
 				</div>
 				<div class="checkbox">
 					<label><input type="checkbox" ng-model="signUp.formData.editor">I want to be an editor user</label>
