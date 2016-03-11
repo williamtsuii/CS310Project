@@ -9,7 +9,7 @@ var fs = require('fs');
 var mongoose = require('mongoose');
 var db = mongoose.createConnection('mongodb://william1:asdfjkl1@ds011409.mlab.com:11409/comicsans');
 var schema = new mongoose.Schema({
-    image: { data: Buffer, contentType: String },
+    image: String,
     id: String,
     title: String,
     author: { uid: String, username: String },
@@ -203,7 +203,7 @@ module.exports = function (app) {
 
 
       var comicProperties = ({
-         "image": {},
+         "image": req.body.image,
          "id": comicID,
          "author": {"uid": userID, "username" : username},
          "title": req.body.title,
@@ -213,7 +213,13 @@ module.exports = function (app) {
          "hidden" : req.body.hidden
       });
 
+        var comicToSave = new ComicSans(comicProperties);
+        console.log(comicProperties.image);
+        comicToSave.save(function(err) {
+            if (err) return handleError(err);
 
+            console.log(comicToSave);
+        });
 
     });
 

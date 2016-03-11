@@ -197,8 +197,7 @@
 			<button class="btn btn-default" ng-show="uProfile.editor" ng-click="profile.createComic()">Create Comic</button>
 
 				<div ng-repeat="comic in comicsObjects">
-					<img src="comic.image" style="width:304px;height:228px;">
-					<!--<p>{{comic.title}}</p>-->
+					<img src='{{comic}}' style="width:304px;height:228px;">
 				</div>
 
 		</div>

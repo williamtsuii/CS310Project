@@ -92,12 +92,16 @@ var comicSans;
             this.User.view(id)
                 .success(function (data) {
                 $scope.uProfile = data;
+                console.log(data);
                 u.getFavourites(id).success(function (data) {
+                    console.log(data);
                     var arr = Object.keys(data).map(function (key) { return data[key]; });
                     for (var i = 0; i < arr.length; i++) {
                         c.viewComic(arr[i]).success(function (data) {
-                            $scope.comicsObjects.push(data);
-                            console.log($scope.comicsObjects);
+                            $scope.comicsObjects.push(data.image);
+                            console.log(data.image);
+                            //console.log(JSON.parse(data.image));
+                            //console.log($scope.comicsObjects);
                         });
                     }
                 });
@@ -132,7 +136,7 @@ var comicSans;
             var comicImg = this.canvas.toDataURL({
                 format: "png"
             });
-            form.add(comicImg);
+            form.image = comicImg;
             console.log(form);
             this.Comic.makeComic(form)
                 .success(function () {
