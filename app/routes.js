@@ -23,17 +23,6 @@ var schema = new mongoose.Schema({
 var ComicSans = mongoose.model('comic-sans', schema); //model
 
 
-function getTodos(res) {
-    Todo.find(function (err, todos) {
-
-        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-        if (err)
-            res.send(err)
-
-        res.json(todos); // return all todos in JSON format
-    });
-};
-
 function login(req, res) {
 
     var userDB = refRoot;
@@ -45,11 +34,11 @@ function login(req, res) {
     }, function (error, authData) {
         if (error) {
             console.log("log in failed " + error);
-            res.send(error);
+            return res.send(error);
         } else {
             userID = authData.uid;
             console.log("log in succeeded" + authData);
-            res.send(userID);             //return the userID to client for easy access to personal page
+            return res.send(userID);             //return the userID to client for easy access to personal page
         }
 
     }, { remember: "sessionally" });
@@ -77,7 +66,7 @@ module.exports = function (app) {
                     "preferences": req.body.preferences,
                     "username": req.body.name,
                     "editor": req.body.editor,
-                    "favourites": {}
+                    "favourites": 'hello'
                 });
                 login(req, res);
             }
@@ -98,13 +87,25 @@ module.exports = function (app) {
         console.log(req.body);
         uUserDB.on('value', function (snapshot) {
             var data = snapshot.val();
-            res.json(data);
+            return res.json(data);
         }, function (error) {
-            res.send(error);
+             return res.send(error);
+        });
+    });
+
+
+    app.get('/user/getFavourite/:uid', function(req, res){
+        var userId = req.params.uid;
+        var userDB =refRoot.child('users/' + userId + '/favourites');
+        userDB.on('value', function (snapshot) {
+            var data = snapshot.val();
+            return res.json(data);
+        }, function (error) {
+            return res.send(error);
         });
     });
     
-    app.put('user/edit/*', function(req, res) {
+    app.put('/user/edit/*', function(req, res) {
         var userID = req.path;
         var userDB =refRoot.child('users/' + userID);
         
@@ -112,21 +113,21 @@ module.exports = function (app) {
         }, function(error){
             if(error) { 
                 console.log("failed to create user");
-                res.send(error);
+                return res.send(error);
             } else {
                 console.log("user updated");
-                res.send(true);
+                return res.send(true);
             }
         })
     });
 
-    app.post('user/favourites/:uid', function (req, res) {
+    app.post('/user/favourites/:uid', function (req, res) {
         var userId = req.params.uid;
-        var userDB =refRoot.child('users/' + userId);
-        var favourites = userDB.child('favourites');
-        favourites.update(req.body);
-        console.log('hihi');
+        var userDB =refRoot.child('users/' + userId + '/favourites');
+        userDB.push(req.body.id);
+        return res.send('POST request to homepage');
     });
+
     
 
      // view+create comics -------------------------------------------------------------

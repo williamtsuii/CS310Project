@@ -37,6 +37,7 @@ var comicSans;
             this.User = User;
         }
         signupController.prototype.submit = function (form) {
+            console.log(form);
             this.User.signup(form)
                 .success(function (data) {
                 console.log('hello');
@@ -82,12 +83,21 @@ var comicSans;
             this.viewProfile(window.localStorage.getItem('id'), $scope);
         }
         profileController.prototype.viewProfile = function (id, $scope) {
-            //console.log('viewProfile');
-            //console.log(s);
-            var that = this;
+            var u = this.User;
+            var c = this.Comic;
+            $scope.comicsObjects = [];
             this.User.view(id)
                 .success(function (data) {
                 $scope.uProfile = data;
+                u.getFavourites(id).success(function (data) {
+                    var arr = Object.keys(data).map(function (key) { return data[key]; });
+                    for (var i = 0; i < arr.length; i++) {
+                        c.viewComic(arr[i]).success(function (data) {
+                            $scope.comicsObjects.push(data);
+                            console.log($scope.comicsObjects);
+                        });
+                    }
+                });
             });
         };
         profileController.prototype.createComic = function () {
@@ -113,6 +123,7 @@ var comicSans;
             console.log(form);
             this.Comic.makeComic(form)
                 .success(function () {
+                window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
                 window.location.replace('/#/comic');
             });
         };
@@ -202,11 +213,15 @@ var comicSans;
         userService.prototype.login = function (user) {
             return this.$http.put('/user/login', user);
         };
+        userService.prototype.getFavourites = function (id) {
+            return this.$http.get('/user/getFavourite/' + id);
+        };
         userService.prototype.view = function (id) {
             return this.$http.get('/user/profile' + "/" + id);
         };
         userService.prototype.addFavourite = function (id, comicId) {
-            return this.$http.post('/user/favourite/' + id, comicId);
+            console.log('add');
+            return this.$http.post('/user/favourites/' + id, comicId);
         };
         userService.$inject = ['$http'];
         return userService;

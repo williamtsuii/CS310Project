@@ -47,6 +47,7 @@ module comicSans {
             this.User = User;
         }
         submit(form : any){
+            console.log(form);
             this.User.signup(form)
                 .success(function(data){
                     console.log('hello');
@@ -103,12 +104,21 @@ module comicSans {
             this.viewProfile(window.localStorage.getItem('id'), $scope);
         }
         viewProfile(id:string, $scope){
-            //console.log('viewProfile');
-            //console.log(s);
-            var that = this;
+            var u = this.User;
+            var c = this.Comic;
+            $scope.comicsObjects = [];
             this.User.view(id)
                 .success(function(data){
                     $scope.uProfile = data;
+                    u.getFavourites(id).success(function(data){
+                        var arr = Object.keys(data).map(function (key) {return data[key]});
+                        for(var i = 0; i < arr.length ; i++){
+                            c.viewComic(arr[i]).success(function (data) {
+                                $scope.comicsObjects.push(data);
+                                console.log($scope.comicsObjects);
+                            });
+                        }
+                    });
                 });
         }
         createComic(){
@@ -135,6 +145,7 @@ module comicSans {
             console.log(form);
             this.Comic.makeComic(form)
                 .success(function(){
+                    window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
                     window.location.replace('/#/comic');
                 });
 
@@ -233,13 +244,20 @@ module comicSans {
             return this.$http.put('/user/login', user);
         }
 
+        getFavourites(id:string): ng.IPromise<any>{
+            return this.$http.get('/user/getFavourite/'+ id);
+        }
+
         view(id: string): ng.IPromise<any>{
             return this.$http.get('/user/profile'+ "/" + id);
         }
 
-        addFavourite(id:string , comicId: any){
-            return this.$http.post('/user/favourite/' + id, comicId)
+        addFavourite(id:string , comicId: any): ng.IPromise<any>{
+            console.log('add');
+            return this.$http.post('/user/favourites/' + id, comicId);
         }
+
+
 
     }
     // Service that helps set title to pages so that they appear at the top of the page
