@@ -224,7 +224,7 @@ module comicSans {
             this.Comic.viewComic(id)
                 .success(function(data) {
                     $scope.comicData = data;
-                    //console.log(data);
+                    console.log(data);
                 });
 
         }
