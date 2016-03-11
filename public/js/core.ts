@@ -7,6 +7,9 @@
 
 module comicSans {
 
+    var currentUserId;
+    var comicId;
+    var viewingId;
     // Routing of the app using routeProvider
 
     function routes($routeProvider: ng.route.IRouteProvider) {
@@ -46,12 +49,12 @@ module comicSans {
             $scope.Page.setTitle('Sign Up');
             this.User = User;
         }
-        submit(form: any) {
-            console.log(form);
+        submit(form : any){
+            //console.log(form);
             this.User.signup(form)
-                .success(function(data) {
-                    console.log('hello');
-                    window.localStorage.setItem('id', data);
+                .success(function(data){
+                    currentUserId  = data;
+                    //window.localStorage.setItem('id',data)
                     window.location.replace('/#/profile');
                 });
         }
@@ -78,7 +81,7 @@ module comicSans {
             this.User.login(a)
                 .success(function(data) {
                     this.u = a;
-                    window.localStorage.setItem('id', data);
+                    currentUserId = data;
                     window.location.replace('/#/profile');
                     console.log('success');
 
@@ -101,7 +104,8 @@ module comicSans {
             $scope.Page.setTitle('Profile');
             this.User = User;
             this.Comic = Comic;
-            this.viewProfile(window.localStorage.getItem('id'), $scope);
+            console.log(currentUserId);
+            this.viewProfile(currentUserId, $scope);
         }
         viewProfile(id: string, $scope) {
             var u = this.User;
@@ -125,7 +129,8 @@ module comicSans {
             this.Comic.newComic()
                 .success(function(data) {
                     console.log('hello');
-                    window.localStorage.setItem('comicId', data);
+                    comicId = data;
+                    //window.localStorage.setItem('comicId',data);
                     window.location.replace('/#/create');
                 });
         }
@@ -152,11 +157,11 @@ module comicSans {
             var comicImg = this.canvas.toDataURL({
                 format: "png"
             });
-            form.data = comicImg;
+            form.add(comicImg);
             console.log(form);
             this.Comic.makeComic(form)
-                .success(function() {
-                    window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
+                .success(function(){
+                    viewingId =  comicId;
                     window.location.replace('/#/comic');
                 });
 
@@ -164,8 +169,8 @@ module comicSans {
 
         save(form: any) {
             var comicImg = this.canvas.toJSON();
-            form.push({"data": comicImg});
-            this.Comic.makeComic(form, comicImg)
+            form.push({comicImg});
+            this.Comic.saveComic(form, comicImg)
                 .success(function() {
                     window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
                     window.location.replace('/#/comic');
@@ -202,7 +207,7 @@ module comicSans {
             console.log('comicController loaded!');
             this.User = User;
             this.Comic = Comic;
-            this.view(window.localStorage.getItem('viewingId'), $scope);
+            this.view(viewingId, $scope);
             $scope.comic = this;
         }
 
@@ -215,10 +220,14 @@ module comicSans {
                 });
 
         }
-        addFavourite() {
-            var comicJson = { id: window.localStorage.getItem('viewingId') };
+        addFavourite(){
+            var comicJson = {id: viewingId};
             console.log(comicJson);
-            this.User.addFavourite(window.localStorage.getItem('id'), comicJson);
+            this.User.addFavourite(currentUserId, comicJson)
+                .error(function (error) {
+                    console.log(error);
+                });
+
         }
     }
 
@@ -261,8 +270,11 @@ module comicSans {
         static $inject = ['$http'];
         constructor(private $http: ng.IHttpService) {
         }
-        makeComic(comicData: any, comicImg: any): ng.IPromise<any> {
-            return this.$http.post('/comic/createcomic/' + window.localStorage.getItem('comicId'), comicData);
+        makeComic(comicData: any): ng.IPromise<any>{
+            return this.$http.post('/comic/createcomic/'+ comicId, comicData);
+        }
+        saveComic(comicData: any): ng.IPromise<any>{
+            return this.$http.post('/comic/savecomic/'+ comicId, comicData);
         }
         viewComic(comicId: any): ng.IPromise<any> {
             return this.$http.get('/comic/view/' + comicId);

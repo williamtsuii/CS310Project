@@ -1,4 +1,4 @@
-//var Comic = require('./models/comic');
+var Comic = require('./models/comic');
 database = require('../config/database.js');
 var Firebase = require('firebase');
 var refRoot = new Firebase(database.firebase);
@@ -34,7 +34,7 @@ var schemaSave = new mongoose.Schema({
     hidden: Boolean
 });
 var ComicSans = mongoose.model('comic-sans', schema); 
-var saveComicSans = mongoose.model('comic-sans', schema); //model
+//var saveComicSans = mongoose.model('comic-sans', schema); //model
 
 
 function login(req, res) {
@@ -59,7 +59,20 @@ function login(req, res) {
 
 }
 
-module.exports = function(app) {
+var doIt = function(req, res){
+    return function (error){
+        if(error) {
+            console.log("failed to create user");
+            return res.send(error);
+        } else {
+            console.log("user updated");
+            return res.send(true);
+        }
+    }
+}
+
+
+module.exports = function (app) {
 
     // api ---------------------------------------------------------------------
     //create a new user in the user database
@@ -137,9 +150,10 @@ module.exports = function(app) {
 
     app.post('/user/favourites/:uid', function(req, res) {
         var userId = req.params.uid;
-        var userDB = refRoot.child('users/' + userId + '/favourites');
-        userDB.push(req.body.id);
-        return res.send('POST request to homepage');
+
+        var userDB =refRoot.child('users/' + userId + '/favourites');
+        var fave = userDB.push();
+        fave.set(req.body.id, doIt());
     });
 
 
@@ -168,24 +182,36 @@ module.exports = function(app) {
         // console.log("Array of tags in string!: " + tagarray);
 
 
-        var comicProperties = ({
-            "image": req.body.data,
+        Comic.create({
+            "image": {},
             "id": comicID,
-            "author": { "uid": userID, "username": username },
+            "author": {"uid": userID, "username" : username},
             "title": req.body.title,
             "collaborators": req.body.collabs,
             "synopsis": req.body.about,
             "tags": arrayoftags,
-            "hidden": req.body.hidden
+            "hidden" : req.body.hidden
+        }, function (err, comic) {
+            if (err)
+                res.send(err);
+            else {
+                console.log("comic " + req.body.title + " added");
+                res.redirect('/home');
+            }
         });
+        console.log(Comic);
 
 
-        var comicToSave = new ComicSans(comicProperties);
-        comicToSave.save(function(err) {
-            if (err) return handleError(err);
-
-            console.log(comicToSave);
-        });
+      var comicProperties = ({
+         "image": {},
+         "id": comicID,
+         "author": {"uid": userID, "username" : username},
+         "title": req.body.title,
+         "collaborators": req.body.collabs,
+         "synopsis": req.body.about,
+         "tags": arrayoftags,
+         "hidden" : req.body.hidden
+      });
 
 
 
@@ -233,7 +259,7 @@ module.exports = function(app) {
     app.get('/comic/view/:comicID', function(req, res) {
         var comicID = req.params.comicID;
 
-        comicProperties.findOne({ "id": comicID }, function(err, Comic) {
+        ComicSans.findOne({ "id": comicID }, function(err, Comic) {
             if (err) {
                 console.log(err);
             } else {
