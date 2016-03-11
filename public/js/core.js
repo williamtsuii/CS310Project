@@ -11,6 +11,7 @@ var comicSans;
             .when('/home', { templateUrl: 'home.html', controller: 'homeController as home' })
             .when('/profile', { templateUrl: 'profile.html', controller: 'profileController as profile' })
             .when('/create', { templateUrl: 'create.html', controller: 'createController as create' })
+            .when('/comic', { templateUrl: 'comic.html', controller: 'comicController as comic' })
             .when('/search', { templateUrl: 'search.html', controller: 'searchController as search' }) // William-- NOTE TO SELF: created 03/09/2016 
             .otherwise({ redirectTo: '/home' });
     }
@@ -24,7 +25,7 @@ var comicSans;
         }
         MainCtrl.$inject = ['$scope', 'userService', 'pageService'];
         return MainCtrl;
-    }());
+    })();
     // Controller for when user goes to signup page. Uses userService and pageService. Sets the page name to 'Sign Up'
     // and on click on submit button saves the id in local storage and redirects user to their profile.
     var signupController = (function () {
@@ -45,7 +46,7 @@ var comicSans;
         };
         signupController.$inject = ['$scope', 'userService', 'pageService'];
         return signupController;
-    }());
+    })();
     //Controller for homepage which also has login
     var homeController = (function () {
         function homeController($scope, User, Page) {
@@ -69,7 +70,7 @@ var comicSans;
         };
         homeController.$inject = ['$scope', 'userService', 'pageService'];
         return homeController;
-    }());
+    })();
     // Profile page controller
     var profileController = (function () {
         function profileController($scope, User, Page, Comic) {
@@ -99,7 +100,7 @@ var comicSans;
         };
         profileController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return profileController;
-    }());
+    })();
     // Controller for creating comics
     var createController = (function () {
         function createController($scope, User, Page, Comic) {
@@ -110,26 +111,38 @@ var comicSans;
         }
         createController.prototype.submit = function (form) {
             console.log(form);
-            this.Comic.makeComic(form);
-        };
-        createController.prototype.tag = function (form) {
-            $("#tags").tagit({
-                availableTags: availableTags,
-                autocomplete: { delay: 0, minLength: 1 },
-                beforeTagAdded: function (event, ui) {
-                    if ($.inArray(ui.tagLabel, availableTags) < 0) {
-                        $('#error').show();
-                        return false;
-                    }
-                    else {
-                        $('#error').hide();
-                    }
-                }
+            this.Comic.makeComic(form)
+                .success(function () {
+                window.location.replace('/#/comic');
             });
         };
         createController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return createController;
-    }());
+    })();
+    var comicController = (function () {
+        function comicController($scope, User, Page, Comic) {
+            console.log('comicController loaded!');
+            this.User = User;
+            this.Comic = Comic;
+            this.view(window.localStorage.getItem('viewingId'), $scope);
+            $scope.comic = this;
+        }
+        comicController.prototype.view = function (id, $scope) {
+            console.log('viewComic');
+            this.Comic.viewComic(id)
+                .success(function (data) {
+                $scope.comicData = data;
+                //console.log(data);
+            });
+        };
+        comicController.prototype.addFavourite = function () {
+            var comicJson = { id: window.localStorage.getItem('viewingId') };
+            console.log(comicJson);
+            this.User.addFavourite(window.localStorage.getItem('id'), comicJson);
+        };
+        comicController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
+        return comicController;
+    })();
     var searchController = (function () {
         function searchController($scope, Page, Comic, Search) {
             $scope.search = this;
@@ -148,7 +161,7 @@ var comicSans;
         };
         searchController.$inject = ['$scope', 'pageService', 'comicService', 'searchService'];
         return searchController;
-    }());
+    })();
     var searchService = (function () {
         function searchService($http) {
             this.$http = $http;
@@ -161,7 +174,7 @@ var comicSans;
         };
         searchService.$inject = ['$http'];
         return searchService;
-    }());
+    })();
     var comicService = (function () {
         function comicService($http) {
             this.$http = $http;
@@ -170,14 +183,14 @@ var comicSans;
             return this.$http.post('/comic/createcomic/' + window.localStorage.getItem('comicId'), comicData);
         };
         comicService.prototype.viewComic = function (comicId) {
-            return this.$http.get('/comic/view/:comicID/' + comicId);
+            return this.$http.get('/comic/view/' + comicId);
         };
         comicService.prototype.newComic = function () {
             return this.$http.get('/comic/newcomic');
         };
         comicService.$inject = ['$http'];
         return comicService;
-    }());
+    })();
     // Service for signup, login and view users
     var userService = (function () {
         function userService($http) {
@@ -192,9 +205,12 @@ var comicSans;
         userService.prototype.view = function (id) {
             return this.$http.get('/user/profile' + "/" + id);
         };
+        userService.prototype.addFavourite = function (id, comicId) {
+            return this.$http.post('/user/favourite/' + id, comicId);
+        };
         userService.$inject = ['$http'];
         return userService;
-    }());
+    })();
     // Service that helps set title to pages so that they appear at the top of the page
     var pageService = (function () {
         function pageService() {
@@ -208,7 +224,7 @@ var comicSans;
         };
         pageService.$inject = ['$http'];
         return pageService;
-    }());
+    })();
     angular
         .module('comicSans', ['ngRoute', 'ngTagsInput'])
         .controller('MainCtrl', MainCtrl)
@@ -216,6 +232,7 @@ var comicSans;
         .controller('signupController', signupController)
         .controller('profileController', profileController)
         .controller('createController', createController)
+        .controller('comicController', comicController)
         .controller('searchController', searchController)
         .service('searchService', searchService)
         .service('userService', userService)
@@ -223,3 +240,4 @@ var comicSans;
         .service('comicService', comicService)
         .config(routes);
 })(comicSans || (comicSans = {}));
+//# sourceMappingURL=core.js.map

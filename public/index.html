@@ -163,6 +163,9 @@
 	</script>
 
 	<script type=text/ng-template id=profile.html>
+		<br>
+		<br>
+		<br>
 		<div class="container" >
 			<h1>Welcome <span> {{uProfile.username}}</span>!</h1>
 			<p>Your preferences Are: <span> {{uProfile.preferences}}</span></p>
@@ -171,18 +174,12 @@
 
 	</script>
 
-<<<<<<< HEAD
 
-
-
-
-
-
-
-=======
->>>>>>> william
 	<script type=text/ng-template id=create.html>
 		<div class="container">
+			<br>
+			<br>
+			<br>
 			<div ng-repeat="step in stepsModel">
 				<img class="thumb" ng-src="{{step}}" />
 			</div>
@@ -198,34 +195,28 @@
 					<label for="tags">Tags:</label>
 					<tags-input id="tags" ng-model="create.form.tags" min-length="3" max-length="10" add-on-space=true></tags-input>
 				</div>
-				<button class="btn btn-default" ng-click="create.addFavourite()">Favourite</button>
 				<button type="submit" class="btn btn-default">Create</button>
 
-					<br>
-					<label for="tags">Tags:</label>
-					<tags-input ng-model="tags"></tags-input>
 			</form>
-<<<<<<< HEAD
-
-		
-
-		</div>
-	</script>
-
-
-
-=======
 		</div>
 		</div>
 	</script>
+
+	<script type=text/ng-template id=comic.html>
+		<div type="container">
+			<br>
+			<br>
+			<br>
+			<p>{{comicData.title}}</p>
+			<button class="btn btn-default" ng-click="comic.addFavourite()">Favourite</button>
+		</div>
+	</script>
+
 
 	<script type=text/ng-template id=search.html>
 		<div class="container">
-
-
 		</div>
 	</script>
->>>>>>> william
 
 
 

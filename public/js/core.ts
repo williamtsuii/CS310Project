@@ -15,6 +15,7 @@ module comicSans {
             .when('/home', {templateUrl:'home.html', controller:'homeController as home'})
             .when('/profile', {templateUrl:'profile.html', controller:'profileController as profile'})
             .when('/create', {templateUrl:'create.html', controller:'createController as create'})
+            .when ('/comic', {templateUrl:'comic.html', controller:'comicController as comic'})
             .when('/search', {templateUrl: 'search.html', controller:'searchController as search'}) // William-- NOTE TO SELF: created 03/09/2016 
             .otherwise({redirectTo: '/home'});
     }
@@ -132,24 +133,43 @@ module comicSans {
         }
         submit(form: any) {
             console.log(form);
-            this.Comic.makeComic(form);
-        }
-        tag(form: any) {
-            $("#tags").tagit({
-                availableTags: availableTags,
-                autocomplete: { delay: 0, minLength: 1 },
-                beforeTagAdded: function(event, ui) {
-                    if ($.inArray(ui.tagLabel, availableTags) < 0) {
-                        $('#error').show();
-                        return false;
-                    } else {
-                        $('#error').hide();
-                    }
-                }
-            });
+            this.Comic.makeComic(form)
+                .success(function(){
+                    window.location.replace('/#/comic');
+                });
 
         }
     }
+
+    class comicController{
+        static $inject = ['$scope','userService','pageService', 'comicService'];
+        private Comic;
+        private User;
+        constructor($scope, User: userService,Page: pageService, Comic: comicService){
+            console.log('comicController loaded!');
+            this.User = User;
+            this.Comic = Comic;
+            this.view(window.localStorage.getItem('viewingId'), $scope);
+            $scope.comic = this;
+        }
+
+        view(id:string, $scope){
+            console.log('viewComic');
+            this.Comic.viewComic(id)
+                .success(function (data) {
+                    $scope.comicData = data;
+                    //console.log(data);
+                });
+
+        }
+        addFavourite(){
+            var comicJson = {id: window.localStorage.getItem('viewingId')};
+            console.log(comicJson);
+            this.User.addFavourite(window.localStorage.getItem('id'), comicJson);
+        }
+    }
+
+
 
     class searchController {
         static $inject = ['$scope', 'pageService', 'comicService', 'searchService'];
@@ -176,7 +196,7 @@ module comicSans {
         static $inject = ['$http'];
         constructor(private $http: ng.IHttpService) {
         }
-        viewSearch(text:any):ngIPromise<any> {
+        viewSearch(text:any):ng.IPromise<any> {
             return this.$http.post('/comic/search/', text);
         }
         searchAllComics(searchTerm:any): ng.IPromise<any> {
@@ -192,7 +212,7 @@ module comicSans {
             return this.$http.post('/comic/createcomic/'+ window.localStorage.getItem('comicId'), comicData);
         }
         viewComic(comicId:any):ng.IPromise<any>{
-            return this.$http.get('/comic/view/:comicID/'+ comicId);
+            return this.$http.get('/comic/view/'+ comicId);
         }
         newComic():ng.IPromise<any>{
             return this.$http.get('/comic/newcomic');
@@ -215,6 +235,10 @@ module comicSans {
 
         view(id: string): ng.IPromise<any>{
             return this.$http.get('/user/profile'+ "/" + id);
+        }
+
+        addFavourite(id:string , comicId: any){
+            return this.$http.post('/user/favourite/' + id, comicId)
         }
 
     }
@@ -243,6 +267,7 @@ module comicSans {
         .controller('signupController', signupController)
         .controller('profileController', profileController)
         .controller('createController', createController)
+        .controller('comicController', comicController)
         .controller('searchController', searchController)
         .service('searchService', searchService)
         .service('userService', userService)

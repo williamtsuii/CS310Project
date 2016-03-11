@@ -119,6 +119,14 @@ module.exports = function (app) {
             }
         })
     });
+
+    app.post('user/favourites/:uid', function (req, res) {
+        var userId = req.params.uid;
+        var userDB =refRoot.child('users/' + userId);
+        var favourites = userDB.child('favourites');
+        favourites.update(req.body);
+        console.log('hihi');
+    });
     
 
      // view+create comics -------------------------------------------------------------
@@ -143,7 +151,7 @@ module.exports = function (app) {
             arrayoftags.push(tag.text);
         }          
         // console.log("Array of tags in string!: " + tagarray);
-        /*
+
         Comic.create({
             "image": {},
             "id": comicID,
@@ -162,7 +170,7 @@ module.exports = function (app) {
             }
         });
         console.log(Comic);
-      */
+
 
       var comicProperties = ({
          "image": {},
@@ -196,7 +204,6 @@ module.exports = function (app) {
             console.log(err);
           } else {
             res.json(Comic);
-            console.log(found.comicID);
           }
         });
     });
