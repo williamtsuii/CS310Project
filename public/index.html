@@ -173,9 +173,12 @@
 			<h1>Welcome <span> {{uProfile.username}}</span>!</h1>
 			<p>Your preferences Are: <span> {{uProfile.preferences}}</span></p>
 			<button class="btn btn-default" ng-show="uProfile.editor" ng-click="profile.createComic()">Create Comic</button>
-			<div ng-repeat="comic in comicsObjects">
-				<p>{{comic.title}}</p>
-			</div>
+
+				<div ng-repeat="comic in comicsObjects">
+					<img src="comic.image" style="width:304px;height:228px;">
+					<!--<p>{{comic.title}}</p>-->
+				</div>
+
 		</div>
 
 	</script>

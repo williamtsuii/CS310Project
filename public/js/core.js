@@ -158,6 +158,7 @@ var comicSans;
                 .error(function (error) {
                 console.log(error);
             });
+            window.location.replace('/#/profile');
         };
         comicController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return comicController;

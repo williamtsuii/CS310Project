@@ -95,6 +95,7 @@ module comicSans {
     }
     // Profile page controller
     class profileController{
+        public toggle;
         static $inject = ['$scope','userService','pageService','comicService'];
         private User;
         private Comic;
@@ -107,6 +108,8 @@ module comicSans {
             console.log(currentUserId);
             this.viewProfile(currentUserId, $scope);
         }
+
+
         viewProfile(id:string, $scope){
             var u = this.User;
             var c = this.Comic;
@@ -186,6 +189,7 @@ module comicSans {
                     console.log(error);
                 });
 
+            window.location.replace('/#/profile');
         }
     }
 
