@@ -9,22 +9,22 @@ module comicSans {
 
     // Routing of the app using routeProvider
 
-    function routes($routeProvider : ng.route.IRouteProvider){
+    function routes($routeProvider: ng.route.IRouteProvider) {
         $routeProvider
-            .when('/signup', {templateUrl: 'signup.html',   controller: 'signupController as signUp'})
-            .when('/home', {templateUrl:'home.html', controller:'homeController as home'})
-            .when('/profile', {templateUrl:'profile.html', controller:'profileController as profile'})
-            .when('/create', {templateUrl:'create.html', controller:'createController as create'})
-            .when ('/comic', {templateUrl:'comic.html', controller:'comicController as comic'})
-            .when('/search', {templateUrl: 'search.html', controller:'searchController as search'}) // William-- NOTE TO SELF: created 03/09/2016 
-            .otherwise({redirectTo: '/home'});
+            .when('/signup', { templateUrl: 'signup.html', controller: 'signupController as signUp' })
+            .when('/home', { templateUrl: 'home.html', controller: 'homeController as home' })
+            .when('/profile', { templateUrl: 'profile.html', controller: 'profileController as profile' })
+            .when('/create', { templateUrl: 'create.html', controller: 'createController as create' })
+            .when('/comic', { templateUrl: 'comic.html', controller: 'comicController as comic' })
+            .when('/search', { templateUrl: 'search.html', controller: 'searchController as search' }) // William-- NOTE TO SELF: created 03/09/2016 
+            .otherwise({ redirectTo: '/home' });
     }
 
 
     // MainCtrl that loads when the app loads
-    class MainCtrl{
-        static $inject = ['$scope','userService','pageService'];
-        constructor($scope,User: userService,Page: pageService){
+    class MainCtrl {
+        static $inject = ['$scope', 'userService', 'pageService'];
+        constructor($scope, User: userService, Page: pageService) {
             console.log('MainCtrl loaded!');
             var main = this;
             $scope.Page = Page;
@@ -36,22 +36,22 @@ module comicSans {
 
     // Controller for when user goes to signup page. Uses userService and pageService. Sets the page name to 'Sign Up'
     // and on click on submit button saves the id in local storage and redirects user to their profile.
-    class signupController{
-        static $inject = ['$scope','userService','pageService'];
+    class signupController {
+        static $inject = ['$scope', 'userService', 'pageService'];
         private User;
-        constructor($scope, User: userService,Page: pageService){
+        constructor($scope, User: userService, Page: pageService) {
             $scope.signup = this;
             console.log('signupController loaded!');
             var signUp = this;
             $scope.Page.setTitle('Sign Up');
             this.User = User;
         }
-        submit(form : any){
+        submit(form: any) {
             console.log(form);
             this.User.signup(form)
-                .success(function(data){
+                .success(function(data) {
                     console.log('hello');
-                    window.localStorage.setItem('id',data);
+                    window.localStorage.setItem('id', data);
                     window.location.replace('/#/profile');
                 });
         }
@@ -62,40 +62,40 @@ module comicSans {
 
 
     //Controller for homepage which also has login
-    class homeController{
-        static $inject = ['$scope','userService','pageService'];
+    class homeController {
+        static $inject = ['$scope', 'userService', 'pageService'];
         private User;
         private u: any;
 
-        constructor($scope, User: userService,Page: pageService){
+        constructor($scope, User: userService, Page: pageService) {
             $scope.home = this;
             console.log('homeController loaded!');
             $scope.Page.setTitle('Home');
             this.User = User;
         }
 
-        submit(a:any){
+        submit(a: any) {
             this.User.login(a)
-                .success(function(data){
+                .success(function(data) {
                     this.u = a;
-                    window.localStorage.setItem('id',data);
+                    window.localStorage.setItem('id', data);
                     window.location.replace('/#/profile');
                     console.log('success');
 
                 })
-            .error(function(data){
-                console.log('hello');
-                alert("error");
-            });
-            }
+                .error(function(data) {
+                    console.log('hello');
+                    alert("error");
+                });
+        }
 
     }
     // Profile page controller
-    class profileController{
-        static $inject = ['$scope','userService','pageService','comicService'];
+    class profileController {
+        static $inject = ['$scope', 'userService', 'pageService', 'comicService'];
         private User;
         private Comic;
-        constructor($scope, User: userService,Page: pageService, Comic : comicService){
+        constructor($scope, User: userService, Page: pageService, Comic: comicService) {
             $scope.profile = this;
             console.log('profileController loaded!');
             $scope.Page.setTitle('Profile');
@@ -103,17 +103,17 @@ module comicSans {
             this.Comic = Comic;
             this.viewProfile(window.localStorage.getItem('id'), $scope);
         }
-        viewProfile(id:string, $scope){
+        viewProfile(id: string, $scope) {
             var u = this.User;
             var c = this.Comic;
             $scope.comicsObjects = [];
             this.User.view(id)
-                .success(function(data){
+                .success(function(data) {
                     $scope.uProfile = data;
-                    u.getFavourites(id).success(function(data){
-                        var arr = Object.keys(data).map(function (key) {return data[key]});
-                        for(var i = 0; i < arr.length ; i++){
-                            c.viewComic(arr[i]).success(function (data) {
+                    u.getFavourites(id).success(function(data) {
+                        var arr = Object.keys(data).map(function(key) { return data[key] });
+                        for (var i = 0; i < arr.length; i++) {
+                            c.viewComic(arr[i]).success(function(data) {
                                 $scope.comicsObjects.push(data);
                                 console.log($scope.comicsObjects);
                             });
@@ -121,11 +121,11 @@ module comicSans {
                     });
                 });
         }
-        createComic(){
+        createComic() {
             this.Comic.newComic()
-                .success(function(data){
+                .success(function(data) {
                     console.log('hello');
-                    window.localStorage.setItem('comicId',data);
+                    window.localStorage.setItem('comicId', data);
                     window.location.replace('/#/create');
                 });
         }
@@ -135,28 +135,70 @@ module comicSans {
     class createController {
         static $inject = ['$scope', 'userService', 'pageService', 'comicService'];
         private Comic;
+        private canvas;
         constructor($scope, User: userService, Page: pageService, Comic: comicService) {
-            $scope.Page.setTitle('Create Comics');
+           $scope.Page.setTitle('Create Comics');
             console.log('createController loaded!');
             $scope.create = this;
             this.Comic = Comic;
+            this.canvas = new fabric.Canvas('c');
+            console.log(this.canvas);
+            this.canvas.setHeight(400);
+            this.canvas.setWidth(600);
         }
+
         submit(form: any) {
             console.log(form);
+            var comicImg = this.canvas.toDataURL({
+                format: "png"
+            });
+            form.data = comicImg;
+            console.log(form);
             this.Comic.makeComic(form)
-                .success(function(){
+                .success(function() {
                     window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
                     window.location.replace('/#/comic');
                 });
 
         }
+
+        save(form: any) {
+            var comicImg = this.canvas.toJSON();
+            form.push({"data": comicImg});
+            this.Comic.makeComic(form, comicImg)
+                .success(function() {
+                    window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
+                    window.location.replace('/#/comic');
+                });
+        }
+
+        clearCanvas() {
+            this.canvas.clear();
+        }
+
+        addImage(image: any) {
+            console.log("adding image");
+            console.log(this.canvas);
+            var Image = image.target.files[0];
+            var reader = new FileReader();
+            var canvas = this.canvas;
+            //reader.onload = $scope.imageIsLoaded;
+            reader.onloadend = function load(e: any) {
+                var canvas1 = canvas;
+                fabric.Image.fromURL(e.target.result, function add(oImg) {
+                    oImg.scale(0.1);
+                    canvas1.add(oImg);
+                });
+            };
+            reader.readAsDataURL(Image);
+        }
     }
 
-    class comicController{
-        static $inject = ['$scope','userService','pageService', 'comicService'];
+    class comicController {
+        static $inject = ['$scope', 'userService', 'pageService', 'comicService'];
         private Comic;
         private User;
-        constructor($scope, User: userService,Page: pageService, Comic: comicService){
+        constructor($scope, User: userService, Page: pageService, Comic: comicService) {
             console.log('comicController loaded!');
             this.User = User;
             this.Comic = Comic;
@@ -164,17 +206,17 @@ module comicSans {
             $scope.comic = this;
         }
 
-        view(id:string, $scope){
+        view(id: string, $scope) {
             console.log('viewComic');
             this.Comic.viewComic(id)
-                .success(function (data) {
+                .success(function(data) {
                     $scope.comicData = data;
                     //console.log(data);
                 });
 
         }
-        addFavourite(){
-            var comicJson = {id: window.localStorage.getItem('viewingId')};
+        addFavourite() {
+            var comicJson = { id: window.localStorage.getItem('viewingId') };
             console.log(comicJson);
             this.User.addFavourite(window.localStorage.getItem('id'), comicJson);
         }
@@ -195,10 +237,10 @@ module comicSans {
             console.log(search);
             this.Keyword.searchAllComics(search)
                 .success(function(data) {
-                console.log("submitting search term is successful");
-                window.localStorage.setItem('searchTerm', data);
-                window.location.replace('/#/search');
-            });
+                    console.log("submitting search term is successful");
+                    window.localStorage.setItem('searchTerm', data);
+                    window.location.replace('/#/search');
+                });
         }
 
     }
@@ -207,52 +249,52 @@ module comicSans {
         static $inject = ['$http'];
         constructor(private $http: ng.IHttpService) {
         }
-        viewSearch(text:any):ng.IPromise<any> {
+        viewSearch(text: any): ng.IPromise<any> {
             return this.$http.post('/comic/search/', text);
         }
-        searchAllComics(searchTerm:any): ng.IPromise<any> {
+        searchAllComics(searchTerm: any): ng.IPromise<any> {
             return this.$http.get('/comic/search' + "/" + searchTerm);
         }
     }
 
     class comicService {
         static $inject = ['$http'];
-        constructor(private $http: ng.IHttpService){
+        constructor(private $http: ng.IHttpService) {
         }
-        makeComic(comicData: any): ng.IPromise<any>{
-            return this.$http.post('/comic/createcomic/'+ window.localStorage.getItem('comicId'), comicData);
+        makeComic(comicData: any, comicImg: any): ng.IPromise<any> {
+            return this.$http.post('/comic/createcomic/' + window.localStorage.getItem('comicId'), comicData);
         }
-        viewComic(comicId:any):ng.IPromise<any>{
-            return this.$http.get('/comic/view/'+ comicId);
+        viewComic(comicId: any): ng.IPromise<any> {
+            return this.$http.get('/comic/view/' + comicId);
         }
-        newComic():ng.IPromise<any>{
+        newComic(): ng.IPromise<any> {
             return this.$http.get('/comic/newcomic');
         }
     }
 
     // Service for signup, login and view users
-    class userService{
+    class userService {
         static $inject = ['$http'];
-        constructor(private $http: ng.IHttpService){
+        constructor(private $http: ng.IHttpService) {
         }
 
-        signup(userData:any) :ng.IPromise<any>{
+        signup(userData: any): ng.IPromise<any> {
             return this.$http.post('/user/createuser', userData);
         }
 
-        login(user:any):ng.IPromise<any>{
+        login(user: any): ng.IPromise<any> {
             return this.$http.put('/user/login', user);
         }
 
-        getFavourites(id:string): ng.IPromise<any>{
-            return this.$http.get('/user/getFavourite/'+ id);
+        getFavourites(id: string): ng.IPromise<any> {
+            return this.$http.get('/user/getFavourite/' + id);
         }
 
-        view(id: string): ng.IPromise<any>{
-            return this.$http.get('/user/profile'+ "/" + id);
+        view(id: string): ng.IPromise<any> {
+            return this.$http.get('/user/profile' + "/" + id);
         }
 
-        addFavourite(id:string , comicId: any): ng.IPromise<any>{
+        addFavourite(id: string, comicId: any): ng.IPromise<any> {
             console.log('add');
             return this.$http.post('/user/favourites/' + id, comicId);
         }
@@ -261,16 +303,16 @@ module comicSans {
 
     }
     // Service that helps set title to pages so that they appear at the top of the page
-    class pageService{
+    class pageService {
         static $inject = ['$http'];
-        private title : string;
-        constructor(){
+        private title: string;
+        constructor() {
             this.title = 'default';
         }
-        getTitle():string{
+        getTitle(): string {
             return this.title;
         }
-        setTitle(newTitle:string){
+        setTitle(newTitle: string) {
             this.title = newTitle;
         }
     }

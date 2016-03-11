@@ -118,14 +118,51 @@ var comicSans;
             console.log('createController loaded!');
             $scope.create = this;
             this.Comic = Comic;
+            this.canvas = new fabric.Canvas('c');
+            console.log(this.canvas);
+            this.canvas.setHeight(400);
+            this.canvas.setWidth(600);
         }
         createController.prototype.submit = function (form) {
+            console.log(form);
+            var comicImg = this.canvas.toDataURL({
+                format: "png"
+            });
+            form.data = comicImg;
             console.log(form);
             this.Comic.makeComic(form)
                 .success(function () {
                 window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
                 window.location.replace('/#/comic');
             });
+        };
+        createController.prototype.save = function (form) {
+            var comicImg = this.canvas.toJSON();
+            form.push({ "data": comicImg });
+            this.Comic.makeComic(form, comicImg)
+                .success(function () {
+                window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
+                window.location.replace('/#/comic');
+            });
+        };
+        createController.prototype.clearCanvas = function () {
+            this.canvas.clear();
+        };
+        createController.prototype.addImage = function (image) {
+            console.log("adding image");
+            console.log(this.canvas);
+            var Image = image.target.files[0];
+            var reader = new FileReader();
+            var canvas = this.canvas;
+            //reader.onload = $scope.imageIsLoaded;
+            reader.onloadend = function load(e) {
+                var canvas1 = canvas;
+                fabric.Image.fromURL(e.target.result, function add(oImg) {
+                    oImg.scale(0.1);
+                    canvas1.add(oImg);
+                });
+            };
+            reader.readAsDataURL(Image);
         };
         createController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return createController;
@@ -190,7 +227,7 @@ var comicSans;
         function comicService($http) {
             this.$http = $http;
         }
-        comicService.prototype.makeComic = function (comicData) {
+        comicService.prototype.makeComic = function (comicData, comicImg) {
             return this.$http.post('/comic/createcomic/' + window.localStorage.getItem('comicId'), comicData);
         };
         comicService.prototype.viewComic = function (comicId) {
@@ -255,4 +292,3 @@ var comicSans;
         .service('comicService', comicService)
         .config(routes);
 })(comicSans || (comicSans = {}));
-//# sourceMappingURL=core.js.map
