@@ -45,6 +45,19 @@ function login(req, res) {
 
 }
 
+var doIt = function(req, res){
+    return function (error){
+        if(error) {
+            console.log("failed to create user");
+            return res.send(error);
+        } else {
+            console.log("user updated");
+            return res.send(true);
+        }
+    }
+}
+
+
 module.exports = function (app) {
 
     // api ---------------------------------------------------------------------
@@ -124,8 +137,8 @@ module.exports = function (app) {
     app.post('/user/favourites/:uid', function (req, res) {
         var userId = req.params.uid;
         var userDB =refRoot.child('users/' + userId + '/favourites');
-        userDB.push(req.body.id);
-        return res.send('POST request to homepage');
+        var fave = userDB.push();
+        fave.set(req.body.id, doIt());
     });
 
     
