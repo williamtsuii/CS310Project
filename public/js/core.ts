@@ -65,7 +65,7 @@ module comicSans {
         private User;
         private u: any;
 
-        constructor($scope, User: userService,Page: pageService){
+        constructor($scope, User: userService, Page: pageService){
             $scope.home = this;
             console.log('homeController loaded!');
             $scope.Page.setTitle('Home');
@@ -107,6 +107,7 @@ module comicSans {
             var that = this;
             this.User.view(id)
                 .success(function(data){
+
                     $scope.uProfile = data;
                 });
         }
@@ -129,43 +130,75 @@ module comicSans {
             console.log('createController loaded!');
             $scope.create = this;
             this.Comic = Comic;
-        }
+        }    
         submit(form: any) {
-            console.log(form);
-            this.Comic.makeComic(form);
+            console.log("createController submit form: " + form);
+            this.Comic.makeComic(form)
+                .success(function(data) {
+                    console.log("submit comic works?", +data);
+                    window.location.replace('/#/profile');
+                });
         }
     }
 
     class searchController {
         static $inject = ['$scope', 'pageService', 'comicService', 'searchService'];
-        private Keyword;
+        private Search;
+        private Comic;
         constructor($scope, Page: pageService, Comic: comicService, Search: searchService) {
             $scope.search = this;
             $scope.Page.setTitle("Comic search");
             console.log("searchController loaded!");
-            this.Keyword = Search;
+            this.Comic = Comic;
+            this.Search = Search;
         }
-        submit(search: string) {
-            console.log(search);
-            this.Keyword.searchAllComics(search)
+        /*
+        generateSearch() {
+            this.Search.newSearch()
+               .success(function(data) {
+                   console.log('generating new search');
+                   window.localStorage.setItem('searchTerm', data);
+                   console.log(data);
+                  // this.Search.searchAllComics(data)
+                  //     .success(function(data) {
+                  //         window.location.replace('/#/search');
+                  //     });
+               });
+        }*/
+        /*
+        submit(form: string) {
+        
+            console.log("submitted search string: " + form);
+            this.Search.searchAllComics(form)
                 .success(function(data) {
-                console.log("submitting search term is successful");
-                window.localStorage.setItem('searchTerm', data);
-                window.location.replace('/#/search');
-            });
-        }
+                    window.location.replace('/#/search');
+                });
+        } */
+        
+        submit(search: string,$scope) {
+            console.log("generating a new search of comics");
+            this.Search.searchAllComics(search)
+                .success(function(data) {
+                    
+                   //$scope.titles = data;
+                    console.log(data);
+                    window.location.replace('/#/search');
 
+                });
+        }
     }
 
     class searchService {
         static $inject = ['$http'];
+        private tag: string;
         constructor(private $http: ng.IHttpService) {
         }
-        viewSearch(text:any):ngIPromise<any> {
-            return this.$http.post('/comic/search/', text);
-        }
-        searchAllComics(searchTerm:any): ng.IPromise<any> {
-            return this.$http.get('/comic/search' + "/" + searchTerm);
+        /*
+        newSearch(): ng.IPromise<any> {
+             return this.$http.get('/new/search');
+        }*/
+        searchAllComics(search:string): ng.IPromise<any> {          
+            return this.$http.get('/comic/search/' + search);
         }
     }
 
