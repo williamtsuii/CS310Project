@@ -1,5 +1,5 @@
-var mongoose_1 = require('mongoose');
-var Comic = new mongoose_1.Schema({
+var mongoose = require('mongoose');
+var ComicSchema = new mongoose.Schema({
     image: { data: Buffer, contentType: String },
     id: String,
     title: String,
@@ -10,5 +10,6 @@ var Comic = new mongoose_1.Schema({
     date: { type: Date, default: Date.now },
     hidden: Boolean
 });
+var Comic = mongoose.model('Comic', ComicSchema);
 module.exports = Comic;
 //# sourceMappingURL=comic.js.map
