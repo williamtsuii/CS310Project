@@ -139,6 +139,21 @@ module comicSans {
                     window.location.replace('/#/profile');
                 });
         }
+        tag(form: any) {
+            $("#tags").tagit({
+                availableTags: availableTags,
+                autocomplete: { delay: 0, minLength: 1 },
+                beforeTagAdded: function(event, ui) {
+                    if ($.inArray(ui.tagLabel, availableTags) < 0) {
+                        $('#error').show();
+                        return false;
+                    } else {
+                        $('#error').hide();
+                    }
+                }
+            });
+
+        }
     }
 
     class searchController {
@@ -256,6 +271,7 @@ module comicSans {
 
     angular
         .module('comicSans', ['ngRoute', 'ngTagsInput'])
+
         .controller('MainCtrl', MainCtrl)
         .controller('homeController', homeController)
         .controller('signupController', signupController)
@@ -269,4 +285,7 @@ module comicSans {
         .config(routes);
 
 
+
 }
+
+

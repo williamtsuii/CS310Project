@@ -116,6 +116,21 @@ var comicSans;
                 window.location.replace('/#/profile');
             });
         };
+        createController.prototype.tag = function (form) {
+            $("#tags").tagit({
+                availableTags: availableTags,
+                autocomplete: { delay: 0, minLength: 1 },
+                beforeTagAdded: function (event, ui) {
+                    if ($.inArray(ui.tagLabel, availableTags) < 0) {
+                        $('#error').show();
+                        return false;
+                    }
+                    else {
+                        $('#error').hide();
+                    }
+                }
+            });
+        };
         createController.$inject = ['$scope', 'userService', 'pageService', 'comicService'];
         return createController;
     }());
