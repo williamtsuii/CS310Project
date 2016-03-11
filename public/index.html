@@ -45,19 +45,31 @@
 <nav class="navbar navbar-default navbar-fixed-top page-bar">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="#">{{Page.getTitle()}}</a>
+			<a class="navbar-brand" href="#/home">{{Page.getTitle()}}</a>
 		</div>
 
-
-		<div class="col-lg-2 pull-right" ng-controller="searchController"><!--search on nav bar-->
-		<form ng-submit="search.submit(search.formData)" class="navbar-form search-form" role="search"> <!-- note, need to change the ng-submit probably-->
+ <!--
+		<div class="col-lg-2 pull-right" ng-controller="searchController">
+		<form ng-submit="search.submit(search.formData)" class="navbar-form search-form" role="search"> 
 			<div class="input-group">
 				<input type="text" class="form-control" placeholder="Search comics" ng-model="search.formData" id="searchterm">
 				<div class="input-group-btn">
 					<button class="btn btn-default search-button" type="submit"><i class="glyphicon glyphicon-search"></i></button>
 				</div>
 			</div>
-		</form>
+		</form>  
+-->
+ 
+		<div class="col-lg-2 pull-right" ng-controller="searchController">
+		<form ng-submit="search.submit(search.formData)" class="navbar-form search-form" role="form"> 
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="Search comics" ng-model="search.formData" id="searchterm">
+				<div class="input-group-btn">
+					<button class="btn btn-default search-button" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+				</div>
+			</div>
+		</form>  
+
 	</div>
 </nav>
 
@@ -220,7 +232,11 @@
 	</script>
 
 	<script type=text/ng-template id=search.html>
-		<div class="container">
+		<div class="container" align="left" id="title" ng-controller="searchController">
+			<p1> {{search.getTag()}}</p1>
+			<p2>Your search results: <span></span></p2>
+		</div>
+		<div>
 
 
 		</div>
