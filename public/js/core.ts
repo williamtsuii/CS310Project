@@ -175,12 +175,13 @@ module comicSans {
                 });
         } */
         
-        submit(search: string,$scope) {
+        submit(search: string,$scope: any) {
             console.log("generating a new search of comics");
             this.Search.searchAllComics(search)
                 .success(function(data) {
                     
                    //$scope.titles = data;
+                    
                     console.log(data);
                     window.location.replace('/#/search');
 
