@@ -19,6 +19,7 @@
     <link rel="stylesheet" type="text/css" href="style/style.css">
 
 
+
     <style>
         html {
             overflow-y: scroll;
@@ -35,13 +36,80 @@
         #todo-form {
             margin-bottom: 50px;
         }
+        .detailBox {
+            width:320px;
+            border:1px solid #bbb;
+            margin:50px;
+        }
+        .titleBox {
+            background-color:#fdfdfd;
+            padding:10px;
+        }
+        .titleBox label{
+            color:#444;
+            margin:0;
+            display:inline-block;
+        }
+
+        .commentBox {
+            padding:10px;
+            border-top:1px dotted #bbb;
+        }
+        .commentBox .form-group:first-child, .actionBox .form-group:first-child {
+            width:80%;
+        }
+        .commentBox .form-group:nth-child(2), .actionBox .form-group:nth-child(2) {
+            width:18%;
+        }
+        .actionBox .form-group * {
+            width:100%;
+        }
+        .taskDescription {
+            margin-top:10px 0;
+        }
+        .commentList {
+            padding:0;
+            list-style:none;
+            max-height:200px;
+            overflow:auto;
+        }
+        .commentList li {
+            margin:0;
+            margin-top:10px;
+        }
+        .commentList li > div {
+            display:table-cell;
+        }
+        .commenterImage {
+            width:30px;
+            margin-right:5px;
+            height:100%;
+            float:left;
+        }
+        .commenterImage img {
+            width:100%;
+            border-radius:50%;
+        }
+        .commentText p {
+            margin:0;
+        }
+        .sub-text {
+            color:#aaa;
+            font-family:verdana;
+            font-size:11px;
+        }
+        .actionBox {
+            border-top:1px dotted #bbb;
+            padding:10px;
+        }
     </style>
 
     <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
     <!-- load angular -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-route.js"></script>
-
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <link rel="stylesheet" type="text/css" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <!-- ng-tags-inputs-->
     <script src="./js/services/ng-tags-input.js"></script>
     <link rel="stylesheet" type="text/css" href="./style/ng-tags-input.css">
@@ -169,22 +237,6 @@
 					</div>
 				</div>
 			</div>
-
-			<!--<form ng-submit="home.submit(home.u)" class="form login-form" role="form">-->
-				<!--<div class="form-group">-->
-					<!--<label for="email">Email address:</label>-->
-					<!--<input type="email" class="form-control" id="userEmail" ng-model="home.u.email">-->
-				<!--</div>-->
-				<!--<div class="form-group">-->
-					<!--<label for="pwd">Password:</label>-->
-					<!--<input type="password" class="form-control" id="userPwd" ng-model="home.u.password">-->
-				<!--</div>-->
-				<!--<button type="submit" class="btn btn-default login-button" >Login</button>-->
-			<!--</form>-->
-			<!--<br>-->
-			<!--<p> Don't have an account? Sign up <span><a href="#/signup">here!</a></span></p>-->
-
-
 	</script>
 
 	<script type=text/ng-template id=profile.html>
@@ -195,14 +247,14 @@
 			<h1>Welcome <span> {{uProfile.username}}</span>!</h1>
 			<p>Your preferences Are: <span> {{uProfile.preferences}}</span></p>
 			<button class="btn btn-default" ng-show="uProfile.editor" ng-click="profile.createComic()">Create Comic</button>
+				<h1>Your Favourites:</h1>
+                <div id="faveContainer"></div>
 
-				<div ng-repeat="comic in comicsObjects">
-					<img src='{{comic}}' style="width:304px;height:228px;">
-				</div>
 
 		</div>
 
 	</script>
+
 
 
     <script type=text/ng-template id=create.html>
@@ -243,9 +295,41 @@
             <br>
             <br>
             <br>
-            <p>{{comicData.title}}</p>
-			<img src='{{comicData.image}}' style="width:304px;height:228px;">
-            <button class="btn btn-default" ng-click="comic.addFavourite()">Favourite</button>
+            <div>
+                <h2>{{comicData.title}}</h2>
+                <div id='on' style="display: none;"><button  class="btn btn-default" ng-click="comic.addFavourite()"><i class="glyphicon glyphicon-star-empty"></i></button></div>
+                <div id = 'off' style="display: none;"> <button  class="btn btn-default"><i class="glyphicon glyphicon-star"></i></button></div>
+            </div>
+			<img src='{{comicData.image}}' style="width:500px;height:500px;">
+
+            <div class="detailBox" type="container">
+                <div class="titleBox">
+                    <label>Comments</label>
+                </div>
+                <div class="actionBox">
+                    <ul class="commentList">
+                        <li ng-repeat="c in allComments">
+                            <div class="commenterImage">
+                                <img src="http://lorempixel.com/50/50/people/6" />
+                            </div>
+                            <div class="commentText" >
+                                <p class="">{{c.auth}}</p>
+                                <br>
+                                <p class="">{{c.comm}}</p>
+                            </div>
+
+                        </li>
+                    </ul>
+                    <form class="form-inline" role="form">
+                        <div class="form-group">
+                            <input class="form-control" ng-model="comic.comment.text" type="text" placeholder="Your comments" />
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-default" ng-click="comic.addComment(comic.comment)">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </script>
 
@@ -254,6 +338,7 @@
         <div class="container">
         </div>
     </script>
+
 
 
 </body>

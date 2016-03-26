@@ -16,7 +16,7 @@ var schema = new mongoose.Schema({
     collaborators: [{ uid: String, username: String }],
     synopsis: String,
     tags: [String],
-    comments: [{ body: String, date: Date, user: String }],
+    comments: [{author: String, text: String }],
     date: { type: Date, default: Date.now },
     hidden: Boolean
 });
@@ -174,6 +174,8 @@ module.exports = function (app) {
         var jsontags = req.body.tags;
         var length = jsontags.length;
         var arrayoftags = [];
+        var arrayofComments = [];
+
         //console.log("Length of jsonarray="+length);
         for (i = 0; i < jsontags.length; i++) {
             var tag = jsontags[i];
@@ -190,6 +192,7 @@ module.exports = function (app) {
             "collaborators": req.body.collabs,
             "synopsis": req.body.about,
             "tags": arrayoftags,
+            "comments": [],
             "hidden" : req.body.hidden
         }, function (err, comic) {
             if (err)
@@ -210,11 +213,11 @@ module.exports = function (app) {
          "collaborators": req.body.collabs,
          "synopsis": req.body.about,
          "tags": arrayoftags,
+          "comments": arrayofComments,
          "hidden" : req.body.hidden
       });
 
         var comicToSave = new ComicSans(comicProperties);
-        console.log(comicProperties.image);
         comicToSave.save(function(err) {
             if (err) return handleError(err);
 
@@ -231,6 +234,7 @@ module.exports = function (app) {
         var jsontags = req.body.tags;
         var length = jsontags.length;
         var arrayoftags = [];
+        var arrayofComments = [];
         //console.log("Length of jsonarray="+length);
         for (i = 0; i < jsontags.length; i++) {
             var tag = jsontags[i];
@@ -246,6 +250,7 @@ module.exports = function (app) {
             "collaborators": req.body.collabs,
             "synopsis": req.body.about,
             "tags": arrayoftags,
+            "comments": req.body.comments,
             "hidden": req.body.hidden
         });
 
@@ -259,6 +264,50 @@ module.exports = function (app) {
 
 
 
+    });
+
+    app.post('/comic/addComment/:comicID', function(req, res){
+        var comicID = req.params.comicID;
+        var comic;
+        var arr = [];
+
+        ComicSans.findOne({ "id": comicID }, function(err, Comic) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(req.body);
+                ComicSans.findByIdAndUpdate(
+                    Comic._id,
+                    {$push: {"comments": { $each:  [{ author: req.body.author, text: req.body.text }]}}},
+                    {safe: true, upsert: true},
+                    function(err, id) {
+                        if(err){
+                            console.log(err);
+                        } else {
+                            console.log(id);
+                            res.json(id);
+                        }
+                    }
+                );
+            }
+        });
+
+
+
+
+    });
+
+
+    app.get('/comic/getComments/:comicID', function(req, res){
+        var comicID = req.params.comicID;
+        ComicSans.findOne({ "id": comicID }, function(err, Comic) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(Comic.comments);
+                res.json(Comic.comments);
+            }
+        });
     });
 
     /* GET Comic View Page */
