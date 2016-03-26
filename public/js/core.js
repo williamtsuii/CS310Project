@@ -269,12 +269,39 @@ var comicSans;
             $scope.search = this;
             $scope.Page.setTitle("Comic search");
             console.log("searchController loaded!");
-            this.Keyword = Search;
+            this.Comic = Comic;
+            this.Search = Search;
         }
-        searchController.prototype.submit = function (search) {
-            console.log(search);
-            this.Keyword.searchAllComics(search)
+        /*
+        generateSearch() {
+            this.Search.newSearch()
+               .success(function(data) {
+                   console.log('generating new search');
+                   window.localStorage.setItem('searchTerm', data);
+                   console.log(data);
+                  // this.Search.searchAllComics(data)
+                  //     .success(function(data) {
+                  //         window.location.replace('/#/search');
+                  //     });
+               });
+        }*/
+        /*
+        submit(form: string) {
+        
+            console.log("submitted search string: " + form);
+            this.Search.searchAllComics(form)
+                .success(function(data) {
+
+                    window.location.replace('/#/search');
+                });
+        } */
+        searchController.prototype.submit = function (search, $scope) {
+            console.log("generating a new search of comics");
+            this.Search.searchAllComics(search)
                 .success(function (data) {
+                //$scope.titles = data;
+                console.log(data);
+                window.location.replace('/#/search');
                 console.log("submitting search term is successful");
                 window.localStorage.setItem('searchTerm', data);
                 window.location.replace('/#/search');
@@ -287,11 +314,12 @@ var comicSans;
         function searchService($http) {
             this.$http = $http;
         }
-        searchService.prototype.viewSearch = function (text) {
-            return this.$http.post('/comic/search/', text);
-        };
-        searchService.prototype.searchAllComics = function (searchTerm) {
-            return this.$http.get('/comic/search' + "/" + searchTerm);
+        /*
+        newSearch(): ng.IPromise<any> {
+             return this.$http.get('/new/search');
+        }*/
+        searchService.prototype.searchAllComics = function (search) {
+            return this.$http.get('/comic/search/' + search);
         };
         searchService.$inject = ['$http'];
         return searchService;

@@ -21,20 +21,20 @@ var schema = new mongoose.Schema({
     hidden: Boolean
 });
 
-var schemaSave = new mongoose.Schema({
-    image: { data: Object },
-    id: String,
-    title: String,
-    author: { uid: String, username: String },
-    collaborators: [{ uid: String, username: String }],
-    synopsis: String,
-    tags: [String],
-    comments: [{ body: String, date: Date, user: String }],
-    date: { type: Date, default: Date.now },
-    hidden: Boolean
-});
-var ComicSans = mongoose.model('comic-sans', schema); 
-//var saveComicSans = mongoose.model('comic-sans', schema); //model
+var ComicSans = db.model('comic-sans', schema); //model
+
+/*
+function getTodos(res) {
+    Todo.find(function (err, todos) {
+
+        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+        if (err)
+            res.send(err)
+
+        res.json(todos); // return all todos in JSON format
+    });
+};
+*/
 
 
 function login(req, res) {
@@ -183,7 +183,6 @@ module.exports = function (app) {
         }
         // console.log("Array of tags in string!: " + tagarray);
 
-
         Comic.create({
             "image": {},
             "id": comicID,
@@ -203,6 +202,7 @@ module.exports = function (app) {
             }
         });
         console.log(Comic);
+
 
 
       var comicProperties = ({
@@ -264,7 +264,9 @@ module.exports = function (app) {
 
 
 
-    });
+         console.log(comicToSave);
+      });
+
 
     app.post('/comic/addComment/:comicID', function(req, res){
         var comicID = req.params.comicID;
@@ -323,30 +325,39 @@ module.exports = function (app) {
         });
     });
 
-    /* GET Search Tag Page*/
-    app.get('/comic/search/', function(req, res) {
-        var searchTerm = req.body.searchterm;
+    /* GET Search Page*/ /*
+    app.get('/new/search/', function(req, res ){
+        var searchTerm = req.body.searchTerm;
+        console.log(searchTerm)
         res.send(searchTerm);
     });
-    /* POST Search Tag Page*/
-    app.post('comic/search/:searchTerm', function(req, res) {
-        var tag = req.params.searchTerm;
-        console.log("Finding all mongo docs:" + ComicSans.find());
 
-    });
+*/
+    /* Get all Searched Comics Page*/
+    app.get('/comic/search/:word', function(req, res) {
+      var tag = req.params.word;
+      console.log("Searchbar keyword submit: " + tag);
+      //var found = ComicSans.findOne({ tag : 'asd'});
+      var collection = db.collection('comic-sans');
+      //console.log(collection);
+      var searchedInArray;
+      var arrayTitles=[];
+      collection.find({tags:tag}).toArray(function(err, results) {
+         //console.log(results);
+         searchedInArray=results;
+         console.log(searchedInArray);
+         console.log("Length of search= " + searchedInArray.length);
+         for (i=0; i<searchedInArray.length;i++) {
+            var title = searchedInArray[i];
+            arrayTitles.push(title.title);
 
-
-    //app.upload('comic/upload', function (req, res, authData) {
-    //    var comicID = req.path;
-    //    var userID = authData.uid;
-    //
-    //    Comic.upload({
-    //
-    //    }, function () {
-    //
-    //    });
-    //
-    //});
+         }
+         console.log(arrayTitles);
+         res.json(arrayTitles);
+         
+      });
+      
+   });
 
 
     //// application -------------------------------------------------------------
