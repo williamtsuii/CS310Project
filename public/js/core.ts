@@ -97,6 +97,7 @@ module comicSans {
         static $inject = ['$scope', 'userService', 'pageService', 'comicService'];
         private User;
         private Comic;
+        public getClickedComic;
         constructor($scope, User: userService, Page: pageService, Comic: comicService) {
             $scope.profile = this;
             console.log('profileController loaded!');
@@ -105,33 +106,46 @@ module comicSans {
             this.Comic = Comic;
             console.log(currentUserId);
             this.viewProfile(currentUserId, $scope);
+            getClickedComic = function(id){
+                viewingId = id;
+                console.log(viewingId);
+                console.log(id);
+                window.location.replace('/#/comic');
+            }
         }
 
 
-
         viewProfile(id: string, $scope) {
-
             var u = this.User;
             var c = this.Comic;
             $scope.comicsObjects = [];
+
             this.User.view(id)
                 .success(function(data) {
                     $scope.uProfile = data;
                     console.log(data);
                     u.getFavourites(id).success(function(data) {
-                        console.log(data);
                         var arr = Object.keys(data).map(function(key) { return data[key] });
+                        var faveDiv = document.getElementById("faveContainer");
                         for (var i = 0; i < arr.length; i++) {
-                            c.viewComic(arr[i]).success(function(data) {
-                                $scope.comicsObjects.push(data.image);
-                                console.log(data.image);
-                                //console.log(JSON.parse(data.image));
-                                //console.log($scope.comicsObjects);
+                            c.viewComic(arr[i]).success(function (data) {
+                                var DOM_a = document.createElement("a");
+                                var DOM_img = document.createElement("img");
+                                DOM_img.src = data.image;
+                                DOM_img.style.height = '500px';
+                                DOM_img.style.width = '500px';
+                                DOM_a.appendChild(DOM_img);
+                                DOM_a.href = 'javascript:getClickedComic('+ '"'+ data.id+ '"' +')';
+                                faveDiv.appendChild(DOM_a);
                             });
+
                         }
                     });
                 });
         }
+
+
+
         createComic() {
             this.Comic.newComic()
                 .success(function(data) {
@@ -211,22 +225,47 @@ module comicSans {
         private Comic;
         private User;
         constructor($scope, User: userService, Page: pageService, Comic: comicService) {
+            $scope.Page.setTitle('Comics');
             console.log('comicController loaded!');
             this.User = User;
             this.Comic = Comic;
-            this.view(viewingId, $scope);
+            var showStar = this.isFavourite(viewingId);
+            this.view(viewingId, $scope, showStar);
             $scope.comic = this;
+            this.getComments(viewingId, this.User, $scope);
         }
 
-        view(id: string, $scope) {
+        view(id: string, $scope, callback) {
             console.log('viewComic');
             this.Comic.viewComic(id)
                 .success(function(data) {
                     $scope.comicData = data;
-                    console.log(data);
+                    callback();
+                });
+        }
+        isFavourite(cid:any){
+            var flag = false;
+            var favourites;
+            this.User.getFavourites(currentUserId)
+                .success(function(data){
+                    favourites = Object.keys(data).map(function(key) { return data[key] });
+                    for (var i = 0; i< favourites.length; i++){
+                        if (favourites[i] == cid){
+                            flag = true;
+                        }
+                        if (flag) {
+                            document.getElementById("on").style.display = 'none';
+                            document.getElementById("off").style.display = 'block';
+                        } else {
+                            document.getElementById("on").style.display = 'block';
+                            document.getElementById("off").style.display = 'none';
+                        }
+                    }
                 });
 
         }
+
+
         addFavourite(){
             var comicJson = {id: viewingId};
             console.log(comicJson);
@@ -236,6 +275,35 @@ module comicSans {
                 });
 
             window.location.replace('/#/profile');
+        }
+
+        addComment(comment){
+            var commentText = comment.text;
+            var commentAuthorId = currentUserId;
+            var commentObject = {author: commentAuthorId, text: commentText};
+            console.log(commentObject);
+            this.Comic.addComment(viewingId, commentObject)
+                .success(function(error){
+                   console.log(error);
+                });
+        }
+
+        getComments(id, user, $scope){
+            var allComments = [];
+            this.Comic.getComments(id)
+                .success(function(data){
+                    for (var i = 0; i < data.length; i++){
+                        var commentText = data[i].text;
+                        var authId = data[i].author;
+                        user.view(authId)
+                            .success(function(data){
+                                 var name = data.username;
+                                var commentObj = {auth: name, comm: commentText};
+                                allComments.push(commentObj);
+                            });
+                    }
+                    $scope.allComments = allComments;
+                });
         }
     }
 
@@ -325,6 +393,12 @@ module comicSans {
         }
         newComic(): ng.IPromise<any> {
             return this.$http.get('/comic/newcomic');
+        }
+        addComment(comicId: string, comment:any):ng.IPromise<any>{
+            return this.$http.post('/comic/addComment/' + comicId, comment)
+        }
+        getComments(comicId: string):ng.IPromise<any>{
+            return this.$http.get('/comic/getComments/' + comicId);
         }
     }
 
