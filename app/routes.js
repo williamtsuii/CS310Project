@@ -93,7 +93,8 @@ module.exports = function (app) {
                     "preferences": req.body.preferences,
                     "username": req.body.name,
                     "editor": req.body.editor,
-                    "favourites": 'hello'
+                    "photo" : req.body.photo,
+                    "favourites": [],
                 });
                 login(req, res);
             }
