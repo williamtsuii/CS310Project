@@ -274,6 +274,8 @@ module comicSans {
             window.location.replace('/#/edit');
         }
 
+
+
         viewProfile(id: string, $scope) {
             var u = this.User;
             var c = this.Comic;
@@ -281,6 +283,16 @@ module comicSans {
 
             this.User.view(id)
                 .success(function(data) {
+                    c.getsSavedComics().success(function(data){
+                        var everything = data;
+                        for (var j = 0; j < everything.length; j++){
+                            c.viewComic(everything[j]).success(function(data2) {
+                                if (id == data2.author){
+
+                                }
+                            });
+                        }
+                    });
                     console.log(data.photo);
                     $scope.uProfile = data;
                     console.log(data);
@@ -301,6 +313,9 @@ module comicSans {
 
                         }
                     });
+
+
+
                 });
         }
 
@@ -309,9 +324,7 @@ module comicSans {
         createComic() {
             this.Comic.newComic()
                 .success(function(data) {
-                    console.log('hello');
                     comicId = data;
-                    //window.localStorage.setItem('comicId',data);
                     window.location.replace('/#/create');
                 });
         }
@@ -567,6 +580,10 @@ module comicSans {
         }
         getComments(comicId: string): ng.IPromise<any> {
             return this.$http.get('/comic/getComments/' + comicId);
+        }
+
+        getsSavedComics() : ng.IPromise<any>{
+            return this.$http.get('/comic/saved');
         }
     }
 

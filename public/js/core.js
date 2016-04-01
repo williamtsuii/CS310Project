@@ -224,6 +224,15 @@ var comicSans;
             $scope.comicsObjects = [];
             this.User.view(id)
                 .success(function (data) {
+                c.getsSavedComics().success(function (data) {
+                    var everything = data;
+                    for (var j = 0; j < everything.length; j++) {
+                        c.viewComic(everything[j]).success(function (data2) {
+                            if (id == data2.author) {
+                            }
+                        });
+                    }
+                });
                 console.log(data.photo);
                 $scope.uProfile = data;
                 console.log(data);
@@ -248,9 +257,7 @@ var comicSans;
         profileController.prototype.createComic = function () {
             this.Comic.newComic()
                 .success(function (data) {
-                console.log('hello');
                 comicId = data;
-                //window.localStorage.setItem('comicId',data);
                 window.location.replace('/#/create');
             });
         };
@@ -476,6 +483,9 @@ var comicSans;
         comicService.prototype.getComments = function (comicId) {
             return this.$http.get('/comic/getComments/' + comicId);
         };
+        comicService.prototype.getsSavedComics = function () {
+            return this.$http.get('/comic/saved');
+        };
         comicService.$inject = ['$http'];
         return comicService;
     }());
@@ -546,3 +556,4 @@ var comicSans;
         .service('comicService', comicService)
         .config(routes);
 })(comicSans || (comicSans = {}));
+//# sourceMappingURL=core.js.map
