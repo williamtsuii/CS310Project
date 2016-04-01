@@ -59,17 +59,6 @@ function login(req, res) {
 
 }
 
-var doIt = function(req, res){
-    return function (error){
-        if(error) {
-            console.log("failed to create user");
-            return res.send(error);
-        } else {
-            console.log("user updated");
-            return res.send(true);
-        }
-    }
-}
 
 
 module.exports = function (app) {
@@ -93,8 +82,7 @@ module.exports = function (app) {
                     "preferences": req.body.preferences,
                     "username": req.body.name,
                     "editor": req.body.editor,
-                    "photo" : req.body.photo,
-                    "favourites": [],
+                    "photo" : req.body.photo
                 });
                 login(req, res);
             }
@@ -157,7 +145,15 @@ module.exports = function (app) {
 
         var userDB =refRoot.child('users/' + userId + '/favourites');
         var fave = userDB.push();
-        fave.set(req.body.id, doIt());
+        fave.set(req.body.id, function (error){
+            if(error) {
+                console.log("failed to create user");
+                return res.send(error);
+            } else {
+                console.log("user updated");
+                return res.send(true);
+            }
+        });
     });
 
 
@@ -311,7 +307,7 @@ module.exports = function (app) {
                 console.log(err);
             } else {
                 console.log(Comic.comments);
-                res.json(Comic.comments);
+                res.send(Comic.comments);
             }
         });
     });
