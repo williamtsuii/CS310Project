@@ -280,7 +280,7 @@ module.exports = function (app) {
         "username": gUName,
         "collaborators": req.body.collabs,
         "synopsis": req.body.synopsis,
-        "categories": array
+        "categories": arrayofCategories
         "tags": arrayoftags,
         "comments": [],
         "hidden" : req.body.hidden
