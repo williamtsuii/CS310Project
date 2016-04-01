@@ -12,7 +12,8 @@ var schema = new mongoose.Schema({
     image: String,
     id: String,
     title: String,
-    author: { uid: String, username: String },
+    author: String,
+    username: String,
     collaborators: [{ uid: String, username: String }],
     synopsis: String,
     tags: [String],
@@ -22,7 +23,8 @@ var schema = new mongoose.Schema({
 });
 
 var ComicSans = db.model('comic-sans', schema); //model
-
+var gUID;
+var gUName;
 /*
 function getTodos(res) {
     Todo.find(function (err, todos) {
@@ -50,13 +52,21 @@ function login(req, res) {
             console.log("log in failed " + error);
             return res.send(error);
         } else {
-            userID = authData.uid;
+            gUID = authData.uid;
             console.log("log in succeeded" + authData);
-            return res.send(userID);             //return the userID to client for easy access to personal page
+            return res.send(gUID);             //return the userID to client for easy access to personal page
         }
 
     }, { remember: "sessionally" });
 
+}
+
+function logout(req, res) {
+    // Let's assume this Firebase reference is already authenticated
+    var userDB = refRoot;
+    var userID = gUID;
+    // Unauthenticate the client
+    userDB.unauth();
 }
 
 var doIt = function(req, res){
@@ -111,8 +121,18 @@ module.exports = function (app) {
         console.log(userID);
         var userDB = refRoot.child('users/');
         var uUserDB = userDB.child(userID);
+        
+        var getUName = uUserDB.child("username");
+        getUName.once('value', function(snapshot) {
+            console.log("Username: " + snapshot.val());
+            gUName = snapshot.val();
+        }, function(err) {
+         console.log("Can't find username");
+        });
+
+
         console.log(req.body);
-        uUserDB.on('value', function(snapshot) {
+        uUserDB.once('value', function(snapshot) {
             var data = snapshot.val();
             return res.json(data);
         }, function(error) {
@@ -172,24 +192,27 @@ module.exports = function (app) {
         var username = authData.username;
         // pushing tags into an array of strings
         var jsontags = req.body.tags;
-        var length = jsontags.length;
+        //var length = jsontags.length;
         var arrayoftags = [];
         var arrayofComments = [];
 
         //console.log("Length of jsonarray="+length);
-        for (i = 0; i < jsontags.length; i++) {
-            var tag = jsontags[i];
-            arrayoftags.push(tag.text);
+        if (jsontags != null) {
+            for (i = 0; i < jsontags.length; i++) {
+                var tag = jsontags[i];
+                arrayoftags.push(tag.text);
+            }
         }
         // console.log("Array of tags in string!: " + tagarray);
 
         Comic.create({
             "image": {},
             "id": comicID,
-            "author": {"uid": userID, "username" : username},
             "title": req.body.title,
+            "author": gUID,
+            "username": gUName,
             "collaborators": req.body.collabs,
-            "synopsis": req.body.about,
+            "synopsis": req.body.synopsis,
             "tags": arrayoftags,
             "comments": [],
             "hidden" : req.body.hidden
@@ -206,15 +229,16 @@ module.exports = function (app) {
 
 
       var comicProperties = ({
-         "image": req.body.image,
-         "id": comicID,
-         "author": {"uid": userID, "username" : username},
-         "title": req.body.title,
-         "collaborators": req.body.collabs,
-         "synopsis": req.body.about,
-         "tags": arrayoftags,
-          "comments": arrayofComments,
-         "hidden" : req.body.hidden
+        "image": {},
+        "id": comicID,
+        "title": req.body.title,
+        "author": gUID,
+        "username": gUName,
+        "collaborators": req.body.collabs,
+        "synopsis": req.body.synopsis,
+        "tags": arrayoftags,
+        "comments": [],
+        "hidden" : req.body.hidden
       });
 
         var comicToSave = new ComicSans(comicProperties);
@@ -232,26 +256,28 @@ module.exports = function (app) {
         var username = authData.username;
         // pushing tags into an array of strings
         var jsontags = req.body.tags;
-        var length = jsontags.length;
         var arrayoftags = [];
         var arrayofComments = [];
         //console.log("Length of jsonarray="+length);
-        for (i = 0; i < jsontags.length; i++) {
-            var tag = jsontags[i];
-            arrayoftags.push(tag.text);
+        if (json.tags != null) {
+            for (i = 0; i < jsontags.length; i++) {
+                var tag = jsontags[i];
+                arrayoftags.push(tag.text);
+            }
         }
         // console.log("Array of tags in string!: " + tagarray);
 
         var comicProperties = ({
-            "image": req.body.data,
+            "image": {},
             "id": comicID,
-            "author": { "uid": userID, "username": username },
             "title": req.body.title,
+            "author": gUID,
+            "username": gUName,
             "collaborators": req.body.collabs,
-            "synopsis": req.body.about,
+            "synopsis": req.body.synopsis,
             "tags": arrayoftags,
-            "comments": req.body.comments,
-            "hidden": req.body.hidden
+            "comments": [],
+            "hidden" : req.body.hidden
         });
 
 
@@ -267,6 +293,27 @@ module.exports = function (app) {
          console.log(comicToSave);
       });
 
+    app.post('/user/subscribe/:subscribeid', function(req, res) {
+      var subscribeUID = req.params.subscribeid;
+      
+      console.log('subscribe to: ' + subscribeUID);
+      var userDB = refRoot.child('users/' + gUID + '/subscriptions');
+      console.log("userDB for subscribe: " + userDB);
+      userDB.push(subscribeUID, function(error, data) {
+         if (error) {
+            console.log(error);
+         } else {
+            console.log('subscribed');
+            return res.send(data);
+         }
+       });
+    });
+
+    app.get('/user/subscriptions', function(req, res) {
+        var userDB = refRoot;
+        console.log(userDB);
+        
+    });
 
     app.post('/comic/addComment/:comicID', function(req, res){
         var comicID = req.params.comicID;
@@ -316,7 +363,7 @@ module.exports = function (app) {
     app.get('/comic/view/:comicID', function(req, res) {
         var comicID = req.params.comicID;
 
-        ComicSans.findOne({ "id": comicID }, function(err, Comic) {
+        ComicSans.findOne({ "id": comicID}, function(err, Comic) {
             if (err) {
                 console.log(err);
             } else {
@@ -334,7 +381,7 @@ module.exports = function (app) {
 
 */
     /* Get all Searched Comics Page*/
-    app.get('/comic/search/:word', function(req, res) {
+    /*app.get('/comic/search/:word', function(req, res) {
       var tag = req.params.word;
       console.log("Searchbar keyword submit: " + tag);
       //var found = ComicSans.findOne({ tag : 'asd'});
@@ -357,7 +404,20 @@ module.exports = function (app) {
          
       });
       
-   });
+   });*/
+
+   app.get('/comic/search', function(req,res) {
+      var collection = db.collection('comic-sans');
+      collection.find().toArray(function(err, results) {
+         if (err) {
+            console.log(err);
+         } else {
+         }
+         res.send(results);
+
+      });
+
+    });
 
 
     //// application -------------------------------------------------------------

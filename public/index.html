@@ -130,154 +130,189 @@
 
 <body>
 <nav class="navbar navbar-default navbar-fixed-top page-bar">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<a class="navbar-brand" href="#/home">{{Page.getTitle()}}</a>
-		</div>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/2home">{{Page.getTitle()}}</a>
+        </div>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/profile">My Profile</a>
+        </div>
 
- <!--
-		<div class="col-lg-2 pull-right" ng-controller="searchController">
-		<form ng-submit="search.submit(search.formData)" class="navbar-form search-form" role="search"> 
-			<div class="input-group">
-				<input type="text" class="form-control" placeholder="Search comics" ng-model="search.formData" id="searchterm">
-				<div class="input-group-btn">
-					<button class="btn btn-default search-button" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-				</div>
-			</div>
-		</form>  
--->
- 
-		<div class="col-lg-2 pull-right" ng-controller="searchController">
-		<form ng-submit="search.submit(search.formData)" class="navbar-form search-form" role="form"> 
-			<div class="input-group">
-				<input type="text" class="form-control" placeholder="Search comics" ng-model="search.formData" id="searchterm">
-				<div class="input-group-btn">
-					<button class="btn btn-default search-button" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-				</div>
-			</div>
-		</form>  
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/#/search">Search Comics</a>
+        </div>
 
-	</div>
+        <div class="navbar-header" ng-controller=MainCtrl>
+            <a class="navbar-brand" href="/#/" ng-click=reload>Logout</a>
+        </div>
+
+    </div>
 </nav>
 
 
 
-	<ng-view>Loading...</ng-view>
+    <ng-view>Loading...</ng-view>
 
 
-	<script type=text/ng-template id=signup.html>
-		<div class="container" >
-			<form ng-submit="signup.submit(signup.formData)" class="form signup-form" role="form">
-				<div style="margin-bottom: 25px; margin-top: 25px;" class="input-group">
-					<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-					<input type="email" class="form-control" id="email" ng-model="signUp.formData.email" placeholder="email">
-				</div>
-				<div style="margin-bottom: 25px" class="input-group">
-					<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-					<input type="password" class="form-control" id="pwd" ng-model="signUp.formData.password" placeholder="password">
-				</div>
-				<div style="margin-bottom: 25px" class="input-group">
-					<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-					<input type="text" class="form-control" id="name" ng-model="signUp.formData.name" placeholder="username">
-				</div>
-				<div style="margin-bottom: 25px" class="input-group">
-					<span class="input-group-addon"><i class="glyphicon glyphicon-heart"></i></span>
-	<select name="preferences" multiple class="form-control" id="preference" ng-model="signUp.formData.preferences" placeholder="preferences">
+    <script type=text/ng-template id=2home.html>
+        <div class="container" align="left" id="title" ng-controller="searchController">
+      
+
+            <div class="container result">
+                <div ng-class="list ? 'col-md-6' : 'col-md-3'" class="comics" ng-repeat="comic in allComics | filter: search | orderBy:'title':reverse" target="_blank">
+                <a href="{{comicCtrl.view(comic.id)}}" target="_blank">
+                  <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{comic.image}}" alt="Click to read {{comic.title}}" title="Click to read {{comic.title}}" class="img-thumbnail" /></a>
+                  <h4 ng-class="list ? 'col-md-10' : 'col-md-12'">Title: {{comic.title}} <br> Author: {{comic.username}}</h4> 
+            </div>
+
+
+        </div>
+    </script>
+
+
+
+    <script type=text/ng-template id=signup.html>
+        <div class="container" >
+            <form ng-submit="signup.submit(signup.formData)" class="form signup-form" role="form">
+                <div style="margin-bottom: 25px; margin-top: 25px;" class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                    <input type="email" class="form-control" id="email" ng-model="signUp.formData.email" placeholder="email">
+                </div>
+                <div style="margin-bottom: 25px" class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <input type="password" class="form-control" id="pwd" ng-model="signUp.formData.password" placeholder="password">
+                </div>
+                <div style="margin-bottom: 25px" class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                    <input type="text" class="form-control" id="name" ng-model="signUp.formData.name" placeholder="username">
+                </div>
+                <div style="margin-bottom: 25px" class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-heart"></i></span>
+    <select name="preferences" multiple class="form-control" id="preference" ng-model="signUp.formData.preferences" placeholder="preferences">
 <option value="comedy">Comedy</option>
 <option value="action">Action</option>
 <option value="horror">Horror</option>
 <option value="romance">Romance</option>
 <option value="drama">Drama</option>
 </select>
-				</div>
-				<div class="checkbox">
-					<label><input type="checkbox" ng-model="signUp.formData.editor">I want to be an editor user</label>
-				</div>
-				<button type="submit" class="btn btn-default signup-button">Submit</button>
-			</form>
-		</div>
-	</script>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-model="signUp.formData.editor">I want to be an editor user</label>
+                </div>
+                <button type="submit" class="btn btn-default signup-button">Submit</button>
+            </form>
+        </div>
+    </script>
 
-	<script type=text/ng-template id=home.html>
-			<div class="jumbotron" style="font-family: 'Architects Daughter', cursive;">
-				<h1 style="font-family: 'Architects Daughter', cursive;">Comic Sans</h1>
-			</div>
-			<h1 style="font-family: 'Architects Daughter', cursive;"> Login to read or create comic strips!</h1>
-			<br>
-			<div class="container">
-				<div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-					<div class="panel panel-info " style="border-color:#ff9999;" >
-						<div class="panel-heading" style="background-color: #ff9999; color:#e60000; ">
-							<div class="panel-title">Sign On</div>
-						</div>
+    <script type=text/ng-template id=home.html>
+            <div class="jumbotron" style="font-family: 'Architects Daughter', cursive;">
+                <h1 style="font-family: 'Architects Daughter', cursive;">Comic Sans</h1>
+            </div>
+            <h1 style="font-family: 'Architects Daughter', cursive;"> Login to read or create comic strips!</h1>
+            <br>
+            <div class="container">
+                <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                    <div class="panel panel-info " style="border-color:#ff9999;" >
+                        <div class="panel-heading" style="background-color: #ff9999; color:#e60000; ">
+                            <div class="panel-title">Sign On</div>
+                        </div>
 
-						<div style="padding-top:30px" class="panel-body" >
+                        <div style="padding-top:30px" class="panel-body" >
 
-							<div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+                            <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
 
-							<form ng-submit="home.submit(home.u)" id="loginform" class="form-horizontal" role="form">
+                            <form ng-submit="home.submit(home.u)" id="loginform" class="form-horizontal" role="form">
 
-								<div style="margin-bottom: 25px" class="input-group">
-									<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-									<input ng-model="home.u.email" id="login-username" type="text" class="form-control" name="username" value="" placeholder="email">
-								</div>
+                                <div style="margin-bottom: 25px" class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                                    <input ng-model="home.u.email" id="login-username" type="text" class="form-control" name="username" value="" placeholder="email">
+                                </div>
 
-								<div style="margin-bottom: 25px" class="input-group">
-									<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-									<input ng-model="home.u.password" id="login-password" type="password" class="form-control" name="password" placeholder="password">
-								</div>
-								<div style="margin-top:10px" class="form-group">
-									<!-- Button -->
+                                <div style="margin-bottom: 25px" class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input ng-model="home.u.password" id="login-password" type="password" class="form-control" name="password" placeholder="password">
+                                </div>
+                                <div style="margin-top:10px" class="form-group">
+                                    <!-- Button -->
 
-									<div class="col-sm-12 controls">
-										<button type="submit" id="btn-login" class="btn btn-success">Login  </button>
+                                    <div class="col-sm-12 controls">
+                                        <button type="submit" id="btn-login" class="btn btn-success">Login  </button>
 
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-md-12 control">
-										<div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
-											Don't have an account!
-											<a href="#/signup">
-												Sign Up Here
-											</a>
-										</div>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-	</script>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12 control">
+                                        <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
+                                            Don't have an account!
+                                            <a href="#/signup">
+                                                Sign Up Here
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </script>
 
-	<script type=text/ng-template id=profile.html>
-		<br>
-		<br>
-		<br>
-		<div class="container" >
-			<h1>Welcome <span> {{uProfile.username}}</span>!</h1>
-			<p>Your preferences Are: <span> {{uProfile.preferences}}</span></p>
-			<button class="btn btn-default" ng-show="uProfile.editor" ng-click="profile.createComic()">Create Comic</button>
-				<h1>Your Favourites:</h1>
+    <script type=text/ng-template id=profile.html>
+        <br>
+        <br>
+        <br>
+        <div class="container" >
+            <h1>Welcome <span> {{uProfile.username}}</span>!</h1>
+            <p>Your preferences Are: <span> {{uProfile.preferences}}</span></p>
+            <button class="btn btn-default" ng-show="uProfile.editor" ng-click="profile.createComic()">Create Comic</button>
+                <h1>Your Favourites:</h1>
                 <div id="faveContainer"></div>
 
+        <div class=subscription>
+            <h2>You're subscribed to: </h2>
+            <div class=container ng-repeat="author in subscriptions | orderBy: username">
+                <a href="{{comicCtrl.view(uProfile.username)}}" target="_blank">
+                  <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{uProfile.image}}" alt="Click to goto {{comic.title}}'s list of comics" title="Goto {{author.comics}}'s comics" class="img-thumbnail" /></a>
+                  <h4 ng-class="list ? 'col-md-10' : 'col-md-12'">Name: {{uProfile.username}}</h4> 
+            </div>
+        </div>
 
-		</div>
+        </div>
 
-	</script>
-
-
-	<script type=text/ng-template id=search.html>
-		<div class="container" align="left" id="title" ng-controller="searchController">
-			<p1> {{search.getTag()}}</p1>
-			<p2>Your search results: <span></span></p2>
-		</div>
-		<div>
+    </script>
 
 
-		</div>
-	</script>
+    <script type=text/ng-template id=search.html>
+        <div class="container" align="left" id="title" ng-controller="searchController">
+            <p1> </p1>
+            
+
+        <div class="container controls">
+            <div class="row">
+                <div class="col-md-12">
+                    <form action="" method="POST" role="form">
+                        <legend>Find a comic</legend>
+                        <div class="input-group">
+                            <input type="search" id="search" class="form-control" ng-model="search">
+                            <div class="input-group-addon">Found {{(allComics | filter:search).length}} of {{allComics.length}}</div> 
+      <div class="input-group-addon "><input type="checkbox" ng-model="list" value="true" id="reverse" /><label for="list">List view</label></div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+
+
+            <div class="container result">
+                <div ng-class="list ? 'col-md-6' : 'col-md-3'" class="comics" ng-repeat="comic in allComics | filter: search | orderBy:'title':reverse" target="_blank">
+                <a href="{{comicCtrl.view(comic.id)}}" target="_blank">
+                  <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{comic.image}}" alt="Click to read {{comic.title}}" title="Click to read {{comic.title}}" class="img-thumbnail" /></a>
+                  <h4 ng-class="list ? 'col-md-10' : 'col-md-12'">Title: {{comic.title}} <br> Tags: {{comic.tags}}</h4> 
+            </div>
+
+
+        </div>
+    </script>
 
 
     <script type=text/ng-template id=create.html>
@@ -296,10 +331,15 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="synopsis">Description:</label>
+                        <input type="text" class="form-control" id="synopsis" ng-model="create.form.synopsis" placeholder="Describe your comic">
+                    </div>
+                    <div class="form-group">
                         <!--tags-->
                         <label for="tags">Tags:</label>
                         <tags-input id="tags" ng-model="create.form.tags" min-length="3" max-length="10" add-on-space="true"></tags-input>
                     </div>
+
                     <div>
                         <label for="image"> Image: </label>
                         <input type='file' ng-model-instant onchange="angular.element(this).scope().create.addImage(event)" />
@@ -323,7 +363,20 @@
                 <div id='on' style="display: none;"><button  class="btn btn-default" ng-click="comic.addFavourite()"><i class="glyphicon glyphicon-star-empty"></i></button></div>
                 <div id = 'off' style="display: none;"> <button  class="btn btn-default"><i class="glyphicon glyphicon-star"></i></button></div>
             </div>
-			<img src='{{comicData.image}}' style="width:500px;height:500px;">
+            <img src='{{comicData.image}}' style="width:500px;height:500px;">
+
+            <div type=container>
+                <p>Author:  
+                    <a href=""><span>{{comicData.username}}</span></a>
+                    <button type=button class='btn btn-warning' ng-click="comic.subscribe(comicData.author)">Subscribe to {{comicData.username}}</button>
+                </p>
+                    
+            </div>
+</p>
+                <!--<p>Author id: {{comicData.author}}</p>-->
+                
+            <p> About the comic: <span>{{comicData.synopsis}}</span></p>
+        </div>
 
             <div class="detailBox" type="container">
                 <div class="titleBox">
