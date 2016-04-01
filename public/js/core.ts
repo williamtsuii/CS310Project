@@ -429,17 +429,20 @@ module comicSans {
 
         getComments(id, user, $scope){
             var allComments = [];
+
             this.Comic.getComments(id)
-                .success(function(data){
-                    for (var i = 0; i < data.length; i++){
-                        var commentText = data[i].text;
-                        var authId = data[i].author;
+                .success(function(d){
+                    var j = 0;
+                    for (var i = 0; i < d.length; i++){
+                        var authId = d[i].author;
                         user.view(authId)
                             .success(function(data){
-                                 var name = data.username;
+                                var commentText = d[j].text;
+                                var name = data.username;
                                 var photo = data.photo;
                                 var commentObj = {auth: name, comm: commentText, photo: photo};
-                                allComments.push(commentObj);
+                                allComments[j] = commentObj;
+                                j++;
                             });
                     }
                     $scope.allComments = allComments;
