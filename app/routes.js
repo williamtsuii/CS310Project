@@ -153,7 +153,7 @@ module.exports = function (app) {
         });
 
 
-        console.log(req.body);
+        //console.log(req.body);
         uUserDB.once('value', function(snapshot) {
             var data = snapshot.val();
             return res.json(data);
@@ -348,8 +348,15 @@ module.exports = function (app) {
     });
 
     app.get('/user/subscriptions', function(req, res) {
-        var userDB = refRoot;
-        console.log(userDB);
+       var userDB = refRoot.child('users/' + gUID + '/subscriptions');
+        userDB.once('value', function(snapshot) {
+            var data = snapshot.val();
+            return res.json(data);
+        }, function(error) {
+            return res.send(error);
+        });
+
+
         
     });
 
@@ -371,7 +378,7 @@ module.exports = function (app) {
                         if(err){
                             console.log(err);
                         } else {
-                            console.log(id);
+                           // console.log(id);
                             res.json(id);
                         }
                     }

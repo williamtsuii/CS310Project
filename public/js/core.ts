@@ -260,8 +260,12 @@ module comicSans {
             User.getSubscriptions()
                 .success(function(data) {
                     $scope.authors = data;
-                    console.log("subscriptions: " + data);                    
+                    console.log(data);
+
+
+                    
                 });
+                
 
 
         }
@@ -600,7 +604,7 @@ module comicSans {
         }
         subscribe(id: string): ng.IPromise<any> {
             console.log('subscribed to: ' + id);
-            return this.$http.post('/user/subscribe/' + id, id);
+            return this.$http.post('/user/subscribe/' + id);
         }
         getSubscriptions(): ng.IPromise<any> { 
             return this.$http.get('/user/subscriptions/');

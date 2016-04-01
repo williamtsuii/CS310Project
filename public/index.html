@@ -237,9 +237,9 @@
 
         <div class=subscription>
             <h2>You're subscribed to: </h2>
-            <div class=container ng-repeat="author in subscriptions | orderBy: username">
-                <a href="{{comicCtrl.view(uProfile.username)}}" target="_blank">
-                  <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{uProfile.image}}" alt="Click to goto {{comic.title}}'s list of comics" title="Goto {{author.comics}}'s comics" class="img-thumbnail" /></a>
+            <div class=container ng-repeat="author in authors | orderBy: username">
+                <a href="{{}}" target="_blank">
+                 </a>
                   <h4 ng-class="list ? 'col-md-10' : 'col-md-12'">Name: {{uProfile.username}}</h4> 
             </div>
         </div>
