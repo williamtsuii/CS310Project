@@ -243,7 +243,7 @@ module.exports = function (app) {
         // console.log("Array of tags in string!: " + tagarray);
 
         if (categories != null) {
-            for (i = 0; i < c_length; i++) {
+            for (i = 0; i < categories.length; i++) {
                 var category = categories[i];
                 arrayofCategories.push(category);
             }
@@ -320,7 +320,7 @@ module.exports = function (app) {
         // console.log("Array of tags in string!: " + tagarray);
 
         if (categories != null) {
-            for (i = 0; i < c_length; i++) {
+            for (i = 0; i < categories.length; i++) {
                 var category = categories[i];
                 arrayofCategories.push(category);
             }

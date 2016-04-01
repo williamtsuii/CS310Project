@@ -315,16 +315,14 @@
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                     <input type="text" class="form-control" id="editName" ng-model="edit.formData.name" value="{{editProfile.username}}">
                 </div>
+
+                <p>Hold Ctrl/Cmd when selecting to select multiple categories.</p>
+
                 <div style="margin-bottom: 25px" class="input-group">
                     Your current preferences are : {{editProfile.preferences.toString()}}
                     <span class="input-group-addon"><i class="glyphicon glyphicon-heart"></i></span>
-                </div>
 
-            <p>Hold Ctrl/Cmd when selecting to select multiple categories.</p>
-
-            <div style="margin-bottom: 25px" class="input-group">
-
-            <select name="editPreference" multiple class="form-control" id="editPreference" ng-model="edit.formData.preferences" placeholder="preferences">
+                               <select name="editPreference" multiple class="form-control" id="editPreference" ng-model="edit.formData.preferences" placeholder="preferences">
             <option value="comedy">Comedy</option>
             <option value="action">Action</option>
             <option value="horror">Horror</option>
@@ -333,7 +331,9 @@
             </select>
 
                     <input type="text" class="form-control" id="editPreference" ng-model="edit.formData.preferences" value="{{editProfile.preferences}}">
+ 
                 </div>
+                
                 <div class="checkbox">
                     <label><input type="checkbox" ng-model="edit.formData.editor"  value="{{editProfile.editor}}">I want to be an editor user</label>
                 </div>
