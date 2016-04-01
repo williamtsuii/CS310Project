@@ -10,18 +10,18 @@ module comicSans {
     var currentUserId;
     var comicId;
     var viewingId;
-    var search;
-    
+    var authorId;
     // Routing of the app using routeProvider
 
     function routes($routeProvider: ng.route.IRouteProvider) {
         $routeProvider
             .when('/signup', { templateUrl: 'signup.html', controller: 'signupController as signUp' })
             .when('/home', { templateUrl: 'home.html', controller: 'homeController as home' })
+            .when('/2home', { templateUrl: '2home.html', controller: 'searchController as search' })
             .when('/profile', { templateUrl: 'profile.html', controller: 'profileController as profile' })
             .when('/create', { templateUrl: 'create.html', controller: 'createController as create' })
             .when('/comic', { templateUrl: 'comic.html', controller: 'comicController as comic' })
-            .when('/search', { templateUrl: 'search.html', controller: 'searchController as search' }) 
+            .when('/search', { templateUrl: 'search.html', controller: 'searchController as search' }) // William-- NOTE TO SELF: created 03/09/2016 
             .otherwise({ redirectTo: '/home' });
     }
 
@@ -34,8 +34,15 @@ module comicSans {
             var main = this;
             $scope.Page = Page;
             $scope.User = User;
-        }
 
+            $scope.reload = function refresh() {
+
+                setTimeout(function() {
+                    location.reload()
+                }, 100);
+            }
+        }
+        
     }
 
 
@@ -51,11 +58,11 @@ module comicSans {
             $scope.Page.setTitle('Sign Up');
             this.User = User;
         }
-        submit(form : any){
+        submit(form: any) {
             //console.log(form);
             this.User.signup(form)
-                .success(function(data){
-                    currentUserId  = data;
+                .success(function(data) {
+                    currentUserId = data;
                     //window.localStorage.setItem('id',data)
                     window.location.replace('/#/profile');
                 });
@@ -99,6 +106,7 @@ module comicSans {
         static $inject = ['$scope', 'userService', 'pageService', 'comicService'];
         private User;
         private Comic;
+        public getClickedComic;
         constructor($scope, User: userService, Page: pageService, Comic: comicService) {
             $scope.profile = this;
             console.log('profileController loaded!');
@@ -107,30 +115,56 @@ module comicSans {
             this.Comic = Comic;
             console.log(currentUserId);
             this.viewProfile(currentUserId, $scope);
-        }
-        viewProfile(id: string, $scope) {
+            getClickedComic = function(id) {
+                viewingId = id;
+                console.log(viewingId);
+                console.log(id);
+                window.location.replace('/#/comic');
+            }
 
+            User.getSubscriptions()
+                .success(function(data) {
+                    $scope.authors = data;
+                    console.log("subscriptions: " + data);                    
+                });
+
+            
+
+        }
+
+
+
+        viewProfile(id: string, $scope) {
             var u = this.User;
             var c = this.Comic;
             $scope.comicsObjects = [];
+
             this.User.view(id)
                 .success(function(data) {
                     $scope.uProfile = data;
                     console.log(data);
                     u.getFavourites(id).success(function(data) {
-                        console.log(data);
                         var arr = Object.keys(data).map(function(key) { return data[key] });
+                        var faveDiv = document.getElementById("faveContainer");
                         for (var i = 0; i < arr.length; i++) {
                             c.viewComic(arr[i]).success(function(data) {
-                                $scope.comicsObjects.push(data.image);
-                                console.log(data.image);
-                                //console.log(JSON.parse(data.image));
-                                //console.log($scope.comicsObjects);
+                                var DOM_a = document.createElement("a");
+                                var DOM_img = document.createElement("img");
+                                DOM_img.src = data.image;
+                                DOM_img.style.height = '500px';
+                                DOM_img.style.width = '500px';
+                                DOM_a.appendChild(DOM_img);
+                                DOM_a.href = 'javascript:getClickedComic(' + '"' + data.id + '"' + ')';
+                                faveDiv.appendChild(DOM_a);
                             });
+
                         }
                     });
                 });
         }
+
+
+
         createComic() {
             this.Comic.newComic()
                 .success(function(data) {
@@ -140,7 +174,6 @@ module comicSans {
                     window.location.replace('/#/create');
                 });
         }
-
     }
 
     // Controller for creating comics
@@ -149,11 +182,9 @@ module comicSans {
         private Comic;
         private canvas;
         constructor($scope, User: userService, Page: pageService, Comic: comicService) {
-           $scope.Page.setTitle('Create Comics');
+            $scope.Page.setTitle('Create Comics');
             console.log('createController loaded!');
             $scope.create = this;
-
-
             this.Comic = Comic;
             this.canvas = new fabric.Canvas('c');
             console.log(this.canvas);
@@ -161,47 +192,30 @@ module comicSans {
             this.canvas.setWidth(600);
         }
 
-        draft(form: any) { // for this function, saving will only save the form but not the canvas due to limitations of canvas
-            /*var comicImg = this.canvas.toJSON();
-            form.push({comicImg});
-            this.Comic.saveComic(form, comicImg)
-                .success(function() {
-                    window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
-                    window.location.replace('/#/comic');
-                });*/
-            // form.push();
-            console.log("form title for saving drafts: " + form.title);
-            console.log("Form tags=" + form.tags);
-            console.log("Form synopsis=" + form.synopsis);
-            console.log('ComicID:' + comicId);
-            this.Comic.draft(form)
-                .success(function() {
-                    console.log("saving draft...");
-                    //window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
-                    window.location.replace('/#/profile');
-                });
-
-
-        }
-
         submit(form: any) {
-            //console.log(form);
-            console.log("console logged: form titlte = " + form.title);
-            console.log("Form tags=" + form.tags);
-            console.log("Form synopsis=" + form.synopsis);
+            console.log(form);
             var comicImg = this.canvas.toDataURL({
                 format: "png"
             });
             form.image = comicImg;
             console.log(form);
             this.Comic.makeComic(form)
-                .success(function(){
-                    viewingId =  comicId;
+                .success(function() {
+                    viewingId = comicId;
                     window.location.replace('/#/comic');
                 });
 
         }
 
+        save(form: any) {
+            var comicImg = this.canvas.toJSON();
+            form.push({ comicImg });
+            this.Comic.saveComic(form, comicImg)
+                .success(function() {
+                    window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
+                    window.location.replace('/#/comic');
+                });
+        }
 
         clearCanvas() {
             this.canvas.clear();
@@ -230,36 +244,60 @@ module comicSans {
         private Comic;
         private User;
         constructor($scope, User: userService, Page: pageService, Comic: comicService) {
+            $scope.Page.setTitle('Comics');
             console.log('comicController loaded!');
             this.User = User;
             this.Comic = Comic;
-            this.view(viewingId, $scope);
+            var showStar = this.isFavourite(viewingId);
+            this.view(viewingId, $scope, showStar);
             $scope.comic = this;
+            $scope.user = this.User;
+            this.getComments(viewingId, this.User, $scope);
         }
 
-        view(id: string, $scope) {
+        view(id: string, $scope, callback) {
             console.log('viewComic');
             this.Comic.viewComic(id)
                 .success(function(data) {
                     $scope.comicData = data;
-                    console.log("comicController data.title: " + data.Title);
-                    console.log("comicController data: " + data);
-
+                    callback();
+                });
+        }
+        isFavourite(cid: any) {
+            var flag = false;
+            var favourites;
+            this.User.getFavourites(currentUserId)
+                .success(function(data) {
+                    favourites = Object.keys(data).map(function(key) { return data[key] });
+                    for (var i = 0; i < favourites.length; i++) {
+                        if (favourites[i] == cid) {
+                            flag = true;
+                        }
+                        if (flag) {
+                            document.getElementById("on").style.display = 'none';
+                            document.getElementById("off").style.display = 'block';
+                        } else {
+                            document.getElementById("on").style.display = 'block';
+                            document.getElementById("off").style.display = 'none';
+                        }
+                    }
                 });
 
         }
-        addFavourite(){
-            var comicJson = {id: viewingId};
+
+
+        addFavourite() {
+            var comicJson = { id: viewingId };
             console.log(comicJson);
             this.User.addFavourite(currentUserId, comicJson)
-                .error(function (error) {
+                .error(function(error) {
                     console.log(error);
                 });
 
             window.location.replace('/#/profile');
         }
 
-        subscribe(id: string, $scope) { 
+        subscribe(id: string, $scope) {
             console.log(id);
             this.User.subscribe(id)
                 .success(function(data) {
@@ -267,17 +305,49 @@ module comicSans {
                 });
 
         }
+
+        addComment(comment) {
+            var commentText = comment.text;
+            var commentAuthorId = currentUserId;
+            var commentObject = { author: commentAuthorId, text: commentText };
+            console.log(commentObject);
+            this.Comic.addComment(viewingId, commentObject)
+                .success(function(error) {
+                    console.log(error);
+                });
+        }
+
+        getComments(id, user, $scope) {
+            var allComments = [];
+            this.Comic.getComments(id)
+                .success(function(data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var commentText = data[i].text;
+                        var authId = data[i].author;
+                        user.view(authId)
+                            .success(function(data) {
+                                var name = data.username;
+                                var commentObj = { auth: name, comm: commentText };
+                                allComments.push(commentObj);
+                            });
+                    }
+                    $scope.allComments = allComments;
+                });
+        }
     }
+
+
+
     class searchController {
         static $inject = ['$scope', 'pageService', 'comicService', 'searchService'];
         private Search;
         private Comic;
         constructor($scope, Page: pageService, Comic: comicService, Search: searchService) {
-            $scope.searchCtrl = this;
+            $scope.search = this;
             $scope.Page.setTitle("Comic search");
             console.log("searchController loaded!");
-            this.Search = Search;
             this.Comic = Comic;
+            this.Search = Search;
             $scope.comicCtrl = this.Comic;
 
             $scope.searchedComics = [];
@@ -289,17 +359,23 @@ module comicSans {
                     $scope.allComics = JSON.parse(JSON.stringify(data));
                 });
 
-
-        }
+            $scope.sentHTTP = function(content) {
+                //payload creation, HTTP request, etc;
+            };
+        }       
 
     }
+
     class searchService {
         static $inject = ['$http'];
-        
+        private tag: string;
         constructor(private $http: ng.IHttpService) {
         }
+        searchAllComics(search: string): ng.IPromise<any> {
+            return this.$http.get('/comic/search/' + search);
+        }
         getComics(): ng.IPromise<any> {
-            return this.$http.get('/comic/search/');
+            return this.$http.get('comic/search');
         }
     }
 
@@ -307,17 +383,23 @@ module comicSans {
         static $inject = ['$http'];
         constructor(private $http: ng.IHttpService) {
         }
-        makeComic(comicData: any): ng.IPromise<any>{
-            return this.$http.post('/comic/createcomic/'+ comicId, comicData);
+        makeComic(comicData: any): ng.IPromise<any> {
+            return this.$http.post('/comic/createcomic/' + comicId, comicData);
         }
-        draft(comicData: any): ng.IPromise<any>{
-            return this.$http.post('/comic/savecomic/'+ comicId, comicData);
+        saveComic(comicData: any): ng.IPromise<any> {
+            return this.$http.post('/comic/savecomic/' + comicId, comicData);
         }
         viewComic(comicId: any): ng.IPromise<any> {
             return this.$http.get('/comic/view/' + comicId);
         }
         newComic(): ng.IPromise<any> {
             return this.$http.get('/comic/newcomic');
+        }
+        addComment(comicId: string, comment: any): ng.IPromise<any> {
+            return this.$http.post('/comic/addComment/' + comicId, comment)
+        }
+        getComments(comicId: string): ng.IPromise<any> {
+            return this.$http.get('/comic/getComments/' + comicId);
         }
     }
 
@@ -334,7 +416,9 @@ module comicSans {
         login(user: any): ng.IPromise<any> {
             return this.$http.put('/user/login', user);
         }
-
+        logout(): ng.IPromise<any> {
+            return this.$http.get('/user/logout');
+        }
         getFavourites(id: string): ng.IPromise<any> {
             return this.$http.get('/user/getFavourite/' + id);
         }
@@ -349,8 +433,12 @@ module comicSans {
         }
         subscribe(id: string): ng.IPromise<any> {
             console.log('subscribed to: ' + id);
-            return this.$http.post('/user/subscribe/' + id);
+            return this.$http.post('/user/subscribe/' + id, id);
         }
+        getSubscriptions(): ng.IPromise<any> { 
+            return this.$http.get('/user/subscriptions/');
+        }
+
 
 
     }
@@ -373,6 +461,7 @@ module comicSans {
 
     angular
         .module('comicSans', ['ngRoute', 'ngTagsInput'])
+
         .controller('MainCtrl', MainCtrl)
         .controller('homeController', homeController)
         .controller('signupController', signupController)
@@ -389,5 +478,4 @@ module comicSans {
 
 
 }
-
 
