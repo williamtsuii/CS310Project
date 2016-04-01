@@ -20,6 +20,7 @@ module comicSans {
             .when('/profile', { templateUrl: 'profile.html', controller: 'profileController as profile' })
             .when('/create', { templateUrl: 'create.html', controller: 'createController as create' })
             .when('/comic', { templateUrl: 'comic.html', controller: 'comicController as comic' })
+            .when('/edit', { templateUrl: 'edit.html', controller: 'editController as edit'})
             .when('/search', { templateUrl: 'search.html', controller: 'searchController as search' }) // William-- NOTE TO SELF: created 03/09/2016 
             .otherwise({ redirectTo: '/home' });
     }
@@ -168,7 +169,36 @@ module comicSans {
     }
 
 
+    class editController {
+        static $inject = ['$scope', 'userService', 'pageService'];
+        private User;
+        constructor($scope, User: userService, Page: pageService) {
+            console.log('edit Controller');
+            $scope.edit = this;
+            $scope.Page.setTitle(' Edit Profile');
+            this.User = User;
+            this.loadProfile(currentUserId, $scope);
+        }
 
+        loadProfile(id: string, $scope) {
+            this.User.view(id)
+                .success(function(data) {
+                    $scope.editProfile = data;
+                    console.log(data);
+                    console.log($scope.editProfile);
+                });
+        }
+
+        submit(form : any){
+
+            this.User.edit(currentUserId, form)
+                .success(function(data){
+
+                    //window.localStorage.setItem('id',data)
+                    window.location.replace('/#/profile');
+                });
+        }
+    }
 
     //Controller for homepage which also has login
     class homeController {
@@ -220,7 +250,9 @@ module comicSans {
             }
         }
 
-
+        editProfile(){
+            window.location.replace('/#/edit');
+        }
         viewProfile(id: string, $scope) {
             var u = this.User;
             var c = this.Comic;
@@ -520,6 +552,10 @@ module comicSans {
             return this.$http.post('/user/createuser', userData);
         }
 
+        edit(id: string, userData: any ) :  ng.IPromise<any> {
+            return this.$http.put('/user/edit/' + id, userData);
+        }
+
         login(user: any): ng.IPromise<any> {
             return this.$http.put('/user/login', user);
         }
@@ -567,6 +603,7 @@ module comicSans {
         .controller('createController', createController)
         .controller('comicController', comicController)
         .controller('searchController', searchController)
+        .controller('editController', editController)
         .service('searchService', searchService)
         .service('userService', userService)
         .service('pageService', pageService)

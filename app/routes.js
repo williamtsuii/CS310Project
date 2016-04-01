@@ -113,7 +113,7 @@ module.exports = function (app) {
         var userDB = refRoot.child('users/');
         var uUserDB = userDB.child(userID);
         console.log(req.body);
-        uUserDB.on('value', function(snapshot) {
+        uUserDB.once('value', function(snapshot) {
             var data = snapshot.val();
             return res.json(data);
         }, function(error) {
@@ -125,7 +125,7 @@ module.exports = function (app) {
     app.get('/user/getFavourite/:uid', function(req, res) {
         var userId = req.params.uid;
         var userDB = refRoot.child('users/' + userId + '/favourites');
-        userDB.on('value', function(snapshot) {
+        userDB.once('value', function(snapshot) {
             var data = snapshot.val();
             return res.json(data);
         }, function(error) {
@@ -133,11 +133,14 @@ module.exports = function (app) {
         });
     });
 
-    app.put('/user/edit/*', function(req, res) {
-        var userID = req.path;
+    app.put('/user/edit/:uid', function(req, res) {
+        var userID = req.params.uid;
         var userDB = refRoot.child('users/' + userID);
 
         userDB.set({
+            "preferences": req.body.preferences,
+            "username": req.body.name,
+            "editor": req.body.editor
         }, function(error) {
             if (error) {
                 console.log("failed to create user");

@@ -16,6 +16,7 @@ var comicSans;
             .when('/profile', { templateUrl: 'profile.html', controller: 'profileController as profile' })
             .when('/create', { templateUrl: 'create.html', controller: 'createController as create' })
             .when('/comic', { templateUrl: 'comic.html', controller: 'comicController as comic' })
+            .when('/edit', { templateUrl: 'edit.html', controller: 'editController as edit' })
             .when('/search', { templateUrl: 'search.html', controller: 'searchController as search' }) // William-- NOTE TO SELF: created 03/09/2016 
             .otherwise({ redirectTo: '/home' });
     }
@@ -135,6 +136,32 @@ var comicSans;
         signupController.$inject = ['$scope', 'userService', 'pageService'];
         return signupController;
     })();
+    var editController = (function () {
+        function editController($scope, User, Page) {
+            console.log('edit Controller');
+            $scope.edit = this;
+            $scope.Page.setTitle(' Edit Profile');
+            this.User = User;
+            this.loadProfile(currentUserId, $scope);
+        }
+        editController.prototype.loadProfile = function (id, $scope) {
+            this.User.view(id)
+                .success(function (data) {
+                $scope.editProfile = data;
+                console.log(data);
+                console.log($scope.editProfile);
+            });
+        };
+        editController.prototype.submit = function (form) {
+            this.User.edit(currentUserId, form)
+                .success(function (data) {
+                //window.localStorage.setItem('id',data)
+                window.location.replace('/#/profile');
+            });
+        };
+        editController.$inject = ['$scope', 'userService', 'pageService'];
+        return editController;
+    })();
     //Controller for homepage which also has login
     var homeController = (function () {
         function homeController($scope, User, Page) {
@@ -175,6 +202,9 @@ var comicSans;
                 window.location.replace('/#/comic');
             };
         }
+        profileController.prototype.editProfile = function () {
+            window.location.replace('/#/edit');
+        };
         profileController.prototype.viewProfile = function (id, $scope) {
             var u = this.User;
             var c = this.Comic;
@@ -443,6 +473,9 @@ var comicSans;
         userService.prototype.signup = function (userData) {
             return this.$http.post('/user/createuser', userData);
         };
+        userService.prototype.edit = function (id, userData) {
+            return this.$http.put('/user/edit/' + id, userData);
+        };
         userService.prototype.login = function (user) {
             return this.$http.put('/user/login', user);
         };
@@ -482,6 +515,7 @@ var comicSans;
         .controller('createController', createController)
         .controller('comicController', comicController)
         .controller('searchController', searchController)
+        .controller('editController', editController)
         .service('searchService', searchService)
         .service('userService', userService)
         .service('pageService', pageService)
