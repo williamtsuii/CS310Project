@@ -155,7 +155,7 @@ module.exports = function (app) {
         });
 
 
-        console.log(req.body);
+        //console.log(req.body);
         uUserDB.once('value', function(snapshot) {
             var data = snapshot.val();
             return res.json(data);
@@ -371,8 +371,15 @@ module.exports = function (app) {
     });
 
     app.get('/user/subscriptions', function(req, res) {
-        var userDB = refRoot;
-        console.log(userDB);
+       var userDB = refRoot.child('users/' + gUID + '/subscriptions');
+        userDB.once('value', function(snapshot) {
+            var data = snapshot.val();
+            return res.json(data);
+        }, function(error) {
+            return res.send(error);
+        });
+
+
         
     });
 
@@ -385,7 +392,7 @@ module.exports = function (app) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(req.body);
+                //console.log(req.body);
                 ComicSans.findByIdAndUpdate(
                     Comic._id,
                     {$push: {"comments": { $each:  [{ author: req.body.author, text: req.body.text }]}}},
@@ -394,7 +401,7 @@ module.exports = function (app) {
                         if(err){
                             console.log(err);
                         } else {
-                            console.log(id);
+                           // console.log(id);
                             res.json(id);
                         }
                     }
@@ -477,6 +484,20 @@ module.exports = function (app) {
          res.send(results);
 
       });
+
+    });
+
+
+    app.get('/comic/saved', function(req,res) {
+        var collection = db.collection('comicsans-drafts');
+        collection.find().toArray(function(err, results) {
+            if (err) {
+                console.log(err);
+            } else {
+            }
+            res.send(results);
+
+        });
 
     });
 

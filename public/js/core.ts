@@ -260,18 +260,21 @@ module comicSans {
             User.getSubscriptions()
                 .success(function(data) {
                     $scope.authors = data;
-                    console.log("subscriptions: " + data);                    
-                });
+                    console.log(data);
 
-            
+
+                    
+                });
+                
+
 
         }
-
-
         editProfile(){
             console.log('hello');
             window.location.replace('/#/edit');
         }
+
+
 
         viewProfile(id: string, $scope) {
             var u = this.User;
@@ -280,6 +283,16 @@ module comicSans {
 
             this.User.view(id)
                 .success(function(data) {
+                    c.getsSavedComics().success(function(data){
+                        var everything = data;
+                        for (var j = 0; j < everything.length; j++){
+                            c.viewComic(everything[j]).success(function(data2) {
+                                if (id == data2.author){
+
+                                }
+                            });
+                        }
+                    });
                     console.log(data.photo);
                     $scope.uProfile = data;
                     console.log(data);
@@ -300,6 +313,9 @@ module comicSans {
 
                         }
                     });
+
+
+
                 });
         }
 
@@ -308,9 +324,7 @@ module comicSans {
         createComic() {
             this.Comic.newComic()
                 .success(function(data) {
-                    console.log('hello');
                     comicId = data;
-                    //window.localStorage.setItem('comicId',data);
                     window.location.replace('/#/create');
                 });
         }
@@ -495,13 +509,15 @@ module comicSans {
         static $inject = ['$scope', 'pageService', 'comicService', 'searchService'];
         private Search;
         private Comic;
+        public getInterestedComic;
         constructor($scope, Page: pageService, Comic: comicService, Search: searchService) {
-            $scope.search = this;
+            $scope.searcher = this;
             $scope.Page.setTitle("Comic search");
             console.log("searchController loaded!");
             this.Comic = Comic;
             this.Search = Search;
             $scope.comicCtrl = this.Comic;
+            $scope.ComicData = Comic;
 
             $scope.searchedComics = [];
             $scope.search = "123";
@@ -512,10 +528,26 @@ module comicSans {
                     $scope.allComics = JSON.parse(JSON.stringify(data));
                 });
 
+
             $scope.sentHTTP = function(content) {
                 //payload creation, HTTP request, etc;
             };
+
+
+          //  c.viewComic(arr[i]).success(function(data) 
+
         }       
+        
+        passToGetComic(form: any, $scope) {
+            console.log(form);
+            this.Comic.viewComic(form)
+                .success(function(data) {
+                    //console.log(data);  
+                    viewingId = data.id;
+                    window.location.replace('/#/comic');
+                });
+        }
+
 
     }
 
@@ -557,6 +589,10 @@ module comicSans {
         getComments(comicId: string): ng.IPromise<any> {
             return this.$http.get('/comic/getComments/' + comicId);
         }
+
+        getsSavedComics() : ng.IPromise<any>{
+            return this.$http.get('/comic/saved');
+        }
     }
 
     // Service for signup, login and view users
@@ -593,7 +629,7 @@ module comicSans {
         }
         subscribe(id: string): ng.IPromise<any> {
             console.log('subscribed to: ' + id);
-            return this.$http.post('/user/subscribe/' + id, id);
+            return this.$http.post('/user/subscribe/' + id);
         }
         getSubscriptions(): ng.IPromise<any> { 
             return this.$http.get('/user/subscriptions/');

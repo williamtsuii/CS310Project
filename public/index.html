@@ -177,8 +177,8 @@
 
             <div class="container result">
                 <div ng-class="list ? 'col-md-6' : 'col-md-3'" class="comics" ng-repeat="comic in allComics | filter: search | orderBy:'title':reverse" target="_blank">
-                <a href="{{comicCtrl.view(comic.id)}}" target="_blank">
-                  <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{comic.image}}" alt="Click to read {{comic.title}}" title="Click to read {{comic.title}}" class="img-thumbnail" /></a>
+                <a ng-click="searcher.passToGetComic(comic.id)" target="_blank">
+                  <img id ={{comic.id}} ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{comic.image}}" alt="Click to read {{comic.title}}" title="Click to read {{comic.title}}" class="img-thumbnail" /></a>
                   <h4 ng-class="list ? 'col-md-10' : 'col-md-12'">Title: {{comic.title}} <br> Author: {{comic.username}}</h4> 
             </div>
 
@@ -220,6 +220,11 @@
                 <div class="checkbox">
                     <label><input type="checkbox" ng-model="signUp.formData.editor">I want to be an editor user</label>
                 </div>
+
+                <div id="container">
+                                       <input id="browse" type="file" >
+                                       <div id="preview"></div>
+                                   </div>
                 <button type="submit" class="btn btn-default signup-button">Submit</button>
             </form>
         </div>
@@ -231,6 +236,7 @@
         <br>
         <br>
         <div class="container" >
+            <img src="{{uProfile.photo}}" style="height:100px;width:100px;">
             <button class="btn btn-default" ng-click="profile.editProfile()" > edit profile </button>
             <h1>Welcome <span> {{uProfile.username}}</span>!</h1>
             <p>Your preferences are: <span> {{uProfile.preferences.toString()}} </span></p>
@@ -240,14 +246,14 @@
 
         <div class=subscription>
             <h2>You&#39;re subscribed to: </h2>
-            <div class=container ng-repeat="author in subscriptions | orderBy: username">
-                <a href="{{comicCtrl.view(uProfile.username)}}" target="_blank">
-                  <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{uProfile.image}}" alt="Click to goto {{comic.title}}'s list of comics" title="Goto {{author.comics}}'s comics" class="img-thumbnail" /></a>
+            <div class=container ng-repeat="author in authors | orderBy: username">
+                <a href="{{}}" target="_blank">
+                </a>
                   <h4 ng-class="list ? 'col-md-10' : 'col-md-12'">Name: {{uProfile.username}}</h4> 
-            </div>
-        </div>
 
-        </div>
+                  <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{uProfile.image}}" alt="Click to goto {{comic.title}}'s list of comics" title="Goto {{author.comics}}'s comics" class="img-thumbnail" /></a>
+            </div>
+            </div>
     </script>
 
 	<script type=text/ng-template id=home.html>
@@ -366,7 +372,7 @@
 
             <div class="container result">
                 <div ng-class="list ? 'col-md-6' : 'col-md-3'" class="comics" ng-repeat="comic in allComics | filter: search | orderBy:'title':reverse" target="_blank">
-                <a href="{{comicCtrl.view(comic.id)}}" target="_blank">
+                <a ng-click="searcher.passToGetComic(comic.id)" target="_blank">
                   <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{comic.image}}" alt="Click to read {{comic.title}}" title="Click to read {{comic.title}}" class="img-thumbnail" /></a>
                   <h4 ng-class="list ? 'col-md-10' : 'col-md-12'">Title: {{comic.title}} <br> Tags: {{comic.tags}}</h4> 
             </div>
