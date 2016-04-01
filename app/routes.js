@@ -137,7 +137,7 @@ module.exports = function (app) {
         var userID = req.params.uid;
         var userDB = refRoot.child('users/' + userID);
 
-        userDB.set({
+        userDB.update({
             "preferences": req.body.preferences,
             "username": req.body.name,
             "editor": req.body.editor
