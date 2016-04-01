@@ -458,6 +458,20 @@ module.exports = function (app) {
     });
 
 
+    app.get('/comic/saved', function(req,res) {
+        var collection = db.collection('comicsans-drafts');
+        collection.find().toArray(function(err, results) {
+            if (err) {
+                console.log(err);
+            } else {
+            }
+            res.send(results);
+
+        });
+
+    });
+
+
     //// application -------------------------------------------------------------
     app.get('*', function(req, res) {
         res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
