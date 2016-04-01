@@ -408,12 +408,13 @@ var comicSans;
     }());
     var searchController = (function () {
         function searchController($scope, Page, Comic, Search) {
-            $scope.search = this;
+            $scope.searcher = this;
             $scope.Page.setTitle("Comic search");
             console.log("searchController loaded!");
             this.Comic = Comic;
             this.Search = Search;
             $scope.comicCtrl = this.Comic;
+            $scope.ComicData = Comic;
             $scope.searchedComics = [];
             $scope.search = "123";
             $scope.comics = null;
@@ -424,7 +425,17 @@ var comicSans;
             $scope.sentHTTP = function (content) {
                 //payload creation, HTTP request, etc;
             };
+            //  c.viewComic(arr[i]).success(function(data) 
         }
+        searchController.prototype.passToGetComic = function (form, $scope) {
+            console.log(form);
+            this.Comic.viewComic(form)
+                .success(function (data) {
+                console.log(data);
+                viewingId = data.id;
+                window.location.replace('/#/comic');
+            });
+        };
         searchController.$inject = ['$scope', 'pageService', 'comicService', 'searchService'];
         return searchController;
     }());

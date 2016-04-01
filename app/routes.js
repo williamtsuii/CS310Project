@@ -260,7 +260,7 @@ module.exports = function (app) {
         comicToSave.save(function(err) {
             if (err) return handleError(err);
 
-            console.log(comicToSave);
+            //console.log(comicToSave);
             return res.redirect("asdfasd");
 
         });
@@ -302,13 +302,13 @@ module.exports = function (app) {
         comicToSave.save(function(err) {
             if (err) return handleError(err);
 
-            console.log(comicToSave);
+            //console.log(comicToSave);
             return res.send("basdfasd");
         });
 
 
 
-         console.log(comicToSave);
+         //console.log(comicToSave);
       });
 
     app.post('/user/subscribe/:subscribeid', function(req, res) {
@@ -342,7 +342,7 @@ module.exports = function (app) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(req.body);
+                //console.log(req.body);
                 ComicSans.findByIdAndUpdate(
                     Comic._id,
                     {$push: {"comments": { $each:  [{ author: req.body.author, text: req.body.text }]}}},
@@ -371,7 +371,7 @@ module.exports = function (app) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(Comic);
+                //console.log(Comic);
                 res.send(Comic.comments);
             }
         });

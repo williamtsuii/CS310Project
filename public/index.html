@@ -177,8 +177,8 @@
 
             <div class="container result">
                 <div ng-class="list ? 'col-md-6' : 'col-md-3'" class="comics" ng-repeat="comic in allComics | filter: search | orderBy:'title':reverse" target="_blank">
-                <a href="{{comicCtrl.view(comic.id)}}" target="_blank">
-                  <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{comic.image}}" alt="Click to read {{comic.title}}" title="Click to read {{comic.title}}" class="img-thumbnail" /></a>
+                <a ng-click="searcher.passToGetComic(comic.id)" target="_blank">
+                  <img id ={{comic.id}} ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{comic.image}}" alt="Click to read {{comic.title}}" title="Click to read {{comic.title}}" class="img-thumbnail" /></a>
                   <h4 ng-class="list ? 'col-md-10' : 'col-md-12'">Title: {{comic.title}} <br> Author: {{comic.username}}</h4> 
             </div>
 
@@ -349,7 +349,7 @@
 
             <div class="container result">
                 <div ng-class="list ? 'col-md-6' : 'col-md-3'" class="comics" ng-repeat="comic in allComics | filter: search | orderBy:'title':reverse" target="_blank">
-                <a href="{{comicCtrl.view(comic.id)}}" target="_blank">
+                <a ng-click="searcher.passToGetComic(comic.id)" target="_blank">
                   <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{comic.image}}" alt="Click to read {{comic.title}}" title="Click to read {{comic.title}}" class="img-thumbnail" /></a>
                   <h4 ng-class="list ? 'col-md-10' : 'col-md-12'">Title: {{comic.title}} <br> Tags: {{comic.tags}}</h4> 
             </div>
