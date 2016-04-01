@@ -263,11 +263,8 @@ module comicSans {
                     console.log("subscriptions: " + data);                    
                 });
 
-            
 
         }
-
-
         editProfile(){
             console.log('hello');
             window.location.replace('/#/edit');
@@ -503,13 +500,15 @@ module comicSans {
         static $inject = ['$scope', 'pageService', 'comicService', 'searchService'];
         private Search;
         private Comic;
+        public getInterestedComic;
         constructor($scope, Page: pageService, Comic: comicService, Search: searchService) {
-            $scope.search = this;
+            $scope.searcher = this;
             $scope.Page.setTitle("Comic search");
             console.log("searchController loaded!");
             this.Comic = Comic;
             this.Search = Search;
             $scope.comicCtrl = this.Comic;
+            $scope.ComicData = Comic;
 
             $scope.searchedComics = [];
             $scope.search = "123";
@@ -520,10 +519,26 @@ module comicSans {
                     $scope.allComics = JSON.parse(JSON.stringify(data));
                 });
 
+
             $scope.sentHTTP = function(content) {
                 //payload creation, HTTP request, etc;
             };
+
+
+          //  c.viewComic(arr[i]).success(function(data) 
+
         }       
+        
+        passToGetComic(form: any, $scope) {
+            console.log(form);
+            this.Comic.viewComic(form)
+                .success(function(data) {
+                    //console.log(data);  
+                    viewingId = data.id;
+                    window.location.replace('/#/comic');
+                });
+        }
+
 
     }
 

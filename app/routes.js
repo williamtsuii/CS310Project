@@ -362,7 +362,7 @@ module.exports = function (app) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(req.body);
+                //console.log(req.body);
                 ComicSans.findByIdAndUpdate(
                     Comic._id,
                     {$push: {"comments": { $each:  [{ author: req.body.author, text: req.body.text }]}}},
