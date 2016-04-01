@@ -404,6 +404,7 @@ module comicSans {
                 });
         }
         isFavourite(cid: any, $scope, callback) {
+            console.log("viewing id");
             var flag = false;
             var favourites;
             this.User.getFavourites(currentUserId)
@@ -460,7 +461,7 @@ module comicSans {
 
         getComments(id, user, $scope) {
             var allComments = [];
-
+            console.log("asdfasd");
             this.Comic.getComments(id)
                 .success(function(d){
                     var j = 0;

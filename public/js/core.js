@@ -334,6 +334,7 @@ var comicSans;
             });
         };
         comicController.prototype.isFavourite = function (cid, $scope, callback) {
+            console.log("viewing id");
             var flag = false;
             var favourites;
             this.User.getFavourites(currentUserId)
@@ -383,6 +384,7 @@ var comicSans;
         };
         comicController.prototype.getComments = function (id, user, $scope) {
             var allComments = [];
+            console.log("asdfasd");
             this.Comic.getComments(id)
                 .success(function (d) {
                 var j = 0;

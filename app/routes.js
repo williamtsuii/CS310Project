@@ -234,7 +234,7 @@ module.exports = function (app) {
                 res.send(err);
             else {
                 console.log("comic " + req.body.title + " added");
-                res.redirect('/home');
+                //res.redirect('/home');
             }
         });
         //console.log(Comic);
@@ -261,6 +261,8 @@ module.exports = function (app) {
             if (err) return handleError(err);
 
             console.log(comicToSave);
+            return res.redirect("asdfasd");
+
         });
 
     });
@@ -301,6 +303,7 @@ module.exports = function (app) {
             if (err) return handleError(err);
 
             console.log(comicToSave);
+            return res.send("basdfasd");
         });
 
 
