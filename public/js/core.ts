@@ -266,6 +266,7 @@ module comicSans {
 
         }
         editProfile(){
+            console.log('hello');
             window.location.replace('/#/edit');
         }
 
@@ -345,11 +346,12 @@ module comicSans {
 
         save(form: any) {
             var comicImg = this.canvas.toJSON();
-            form.push({ comicImg });
-            this.Comic.saveComic(form, comicImg)
+            console.log(comicImg);
+            form.image = comicImg;
+            this.Comic.saveComic(form)
                 .success(function() {
-                    window.localStorage.setItem('viewingId', window.localStorage.getItem('comicId'));
-                    window.location.replace('/#/comic');
+                    viewingId = comicId;
+                    window.location.replace('/#/profile');
                 });
         }
 

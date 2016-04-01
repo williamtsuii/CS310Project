@@ -388,11 +388,11 @@
                         <label for="image"> Image: </label>
                         <input type='file' ng-model-instant onchange="angular.element(this).scope().create.addImage(event)" />
                     </div>
-                    <button type="reset" class="btn btn-default" ng-click="create.clearCanvas()">Reset</button>
-                    <button type="save" class="btn btn-default" ng-click="create.save()">Save</button>
                     <button type="submit" class="btn btn-default">Create</button>
 
                 </form>
+                <button type="reset" class="btn btn-default" ng-click="create.clearCanvas()">Reset</button>
+                <button type="save" class="btn btn-default" ng-click="create.save(create.form)">Save</button>
             </div>
         </div>
     </script>

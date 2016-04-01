@@ -7,7 +7,7 @@ var fs = require('fs');
 
 //03/09/2016
 var mongoose = require('mongoose');
-var db = mongoose.createConnection('mongodb://william1:asdfjkl1@ds011409.mlab.com:11409/comicsans');
+var db = mongoose.createConnection('mongodb://william1:asdfjkl1@ds011409.mlab.com:11409/comicsans');    
 var schema = new mongoose.Schema({
     image: String,
     id: String,
@@ -22,7 +22,27 @@ var schema = new mongoose.Schema({
     hidden: Boolean
 });
 
+var saveSchema = new mongoose.Schema({
+    id: String,
+    title: String,
+    author: { uid: String, username: String },
+    collaborators: [{ uid: String, username: String }],
+    synopsis: String,
+    tags: [String],
+    comments: [{ body: String, date: Date, user: String }],
+    date: { type: Date, default: Date.now },
+    hidden: Boolean,
+    image: Object
+});
+
+var templateSchema = new mongoose.Schema({
+    id: String,
+    img: Object
+});
+
 var ComicSans = db.model('comic-sans', schema); //model
+var saveComic = db.model('comicsans-drafts', saveSchema); //model
+var templates = db.model('template', templateSchema);
 var gUID;
 var gUName;
 /*
@@ -276,7 +296,7 @@ module.exports = function (app) {
         var arrayoftags = [];
         var arrayofComments = [];
         //console.log("Length of jsonarray="+length);
-        if (json.tags != null) {
+        if (jsontags != null) {
             for (i = 0; i < jsontags.length; i++) {
                 var tag = jsontags[i];
                 arrayoftags.push(tag.text);
@@ -285,7 +305,7 @@ module.exports = function (app) {
         // console.log("Array of tags in string!: " + tagarray);
 
         var comicProperties = ({
-            "image": {},
+            "image": req.body.image,
             "id": comicID,
             "title": req.body.title,
             "author": gUID,
@@ -298,7 +318,7 @@ module.exports = function (app) {
         });
 
 
-        var comicToSave = new saveComicSans(comicProperties);
+        var comicToSave = new saveComic(comicProperties);
         comicToSave.save(function(err) {
             if (err) return handleError(err);
 
