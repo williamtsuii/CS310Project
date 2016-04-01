@@ -16,6 +16,7 @@ var schema = new mongoose.Schema({
     username: String,
     collaborators: [{ uid: String, username: String }],
     synopsis: String,
+    categories: [String],
     tags: [String],
     comments: [{author: String, text: String }],
     date: { type: Date, default: Date.now },
@@ -28,6 +29,7 @@ var saveSchema = new mongoose.Schema({
     author: { uid: String, username: String },
     collaborators: [{ uid: String, username: String }],
     synopsis: String,
+    categories: [String],
     tags: [String],
     comments: [{ body: String, date: Date, user: String }],
     date: { type: Date, default: Date.now },
@@ -225,7 +227,9 @@ module.exports = function (app) {
         var username = authData.username;
         // pushing tags into an array of strings
         var jsontags = req.body.tags;
+        var categories = req.body.categories;
         //var length = jsontags.length;
+        var arrayofCategories = [];
         var arrayoftags = [];
         var arrayofComments = [];
 
@@ -237,6 +241,13 @@ module.exports = function (app) {
             }
         }
         // console.log("Array of tags in string!: " + tagarray);
+
+        if (categories != null) {
+            for (i = 0; i < categories.length; i++) {
+                var category = categories[i];
+                arrayofCategories.push(category);
+            }
+        }
 
         Comic.create({
             "image": {},
@@ -269,6 +280,7 @@ module.exports = function (app) {
         "username": gUName,
         "collaborators": req.body.collabs,
         "synopsis": req.body.synopsis,
+        "categories": arrayofCategories,
         "tags": arrayoftags,
         "comments": [],
         "hidden" : req.body.hidden
@@ -295,6 +307,9 @@ module.exports = function (app) {
         var jsontags = req.body.tags;
         var arrayoftags = [];
         var arrayofComments = [];
+        var categories = req.body.categories;
+        var arrayofCategories = [];
+
         //console.log("Length of jsonarray="+length);
         if (jsontags != null) {
             for (i = 0; i < jsontags.length; i++) {
@@ -304,6 +319,13 @@ module.exports = function (app) {
         }
         // console.log("Array of tags in string!: " + tagarray);
 
+        if (categories != null) {
+            for (i = 0; i < categories.length; i++) {
+                var category = categories[i];
+                arrayofCategories.push(category);
+            }
+        }
+
         var comicProperties = ({
             "image": req.body.image,
             "id": comicID,
@@ -312,6 +334,7 @@ module.exports = function (app) {
             "username": gUName,
             "collaborators": req.body.collabs,
             "synopsis": req.body.synopsis,
+            "categories": arrayofCategories,
             "tags": arrayoftags,
             "comments": [],
             "hidden" : req.body.hidden

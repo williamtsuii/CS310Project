@@ -8,7 +8,7 @@ var ComicSchema = new mongoose.Schema({
     synopsis: String,
     comments: [{ body: String, date: Date, user: String }],
     date: { type: Date, default: Date.now },
-    hidden: Boolean
+    hidden: Boolean	
 });
 var Comic = mongoose.model('Comic', ComicSchema);
 module.exports = Comic;
