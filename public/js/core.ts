@@ -405,6 +405,11 @@ module comicSans {
                     callback();
                 });
         }
+
+        edit(id: String, $scope) {
+            if (currentUserId == )
+        }
+
         isFavourite(cid: any, $scope, callback) {
             console.log("viewing id");
             var flag = false;
@@ -542,6 +547,9 @@ module comicSans {
         }
         newComic(): ng.IPromise<any> {
             return this.$http.get('/comic/newcomic');
+        }
+        editComic(comicId: any): ng.IPromise<any> {
+            return this.$http.get('/comic/edit/' + comicId);
         }
         addComment(comicId: string, comment: any): ng.IPromise<any> {
             return this.$http.post('/comic/addComment/' + comicId, comment)

@@ -9,7 +9,9 @@ let Comic: Schema = new Schema({
     synopsis		: String,
     comments		: [{ body: String, date: Date, user: String }],
     date 			: { type: Date, default: Date.now },
-    hidden 			: Boolean,
+    tags            : [body: String],
+    categories		: [body: String],
+    hidden 			: Boolean
 });
 
 export = Comic

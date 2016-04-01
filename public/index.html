@@ -205,6 +205,9 @@
                 </div>
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-heart"></i></span>
+
+                <p>Hold Ctrl/Cmd when selecting to select multiple categories.</p>
+
                 <select name="preferences" multiple class="form-control" id="preference" ng-model="signUp.formData.preferences" placeholder="preferences">
             <option value="comedy">Comedy</option>
             <option value="action">Action</option>
@@ -230,13 +233,13 @@
         <div class="container" >
             <button class="btn btn-default" ng-click="profile.editProfile()" > edit profile </button>
             <h1>Welcome <span> {{uProfile.username}}</span>!</h1>
-            <p>Your preferences Are: <span> {{uProfile.preferences}}</span></p>
+            <p>Your preferences are: <span> {{uProfile.preferences.toString()}} </span></p>
             <button class="btn btn-default" ng-show="uProfile.editor" ng-click="profile.createComic()">Create Comic</button>
                 <h1>Your Favourites:</h1>
                 <div id="faveContainer"></div>
 
         <div class=subscription>
-            <h2>You're subscribed to: </h2>
+            <h2>You&#39;re subscribed to: </h2>
             <div class=container ng-repeat="author in subscriptions | orderBy: username">
                 <a href="{{comicCtrl.view(uProfile.username)}}" target="_blank">
                   <img ng-class="list ? 'col-md-2' : 'col-md-12'" ng-src="{{uProfile.image}}" alt="Click to goto {{comic.title}}'s list of comics" title="Goto {{author.comics}}'s comics" class="img-thumbnail" /></a>
@@ -286,7 +289,7 @@
 								<div class="form-group">
 									<div class="col-md-12 control">
 										<div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
-											Don't have an account!
+											Dont have an account!
 											<a href="#/signup">
 												Sign Up Here
 											</a>
@@ -313,8 +316,19 @@
                     <input type="text" class="form-control" id="editName" ng-model="edit.formData.name" value="{{editProfile.username}}">
                 </div>
                 <div style="margin-bottom: 25px" class="input-group">
-                    Your old preferences are : {{editProfile.preferences}}
+                    Your current preferences are : {{editProfile.preferences.toString()}}
                     <span class="input-group-addon"><i class="glyphicon glyphicon-heart"></i></span>
+
+            <p>Hold Ctrl/Cmd when selecting to select multiple categories.</p>
+
+            <select name="editPreference" multiple class="form-control" id="editPreference" ng-model="edit.formData.preferences" placeholder="preferences">
+            <option value="comedy">Comedy</option>
+            <option value="action">Action</option>
+            <option value="horror">Horror</option>
+            <option value="romance">Romance</option>
+            <option value="drama">Drama</option>
+            </select>
+
                     <input type="text" class="form-control" id="editPreference" ng-model="edit.formData.preferences" value="{{editProfile.preferences}}">
                 </div>
                 <div class="checkbox">
@@ -382,6 +396,20 @@
                         <!--tags-->
                         <label for="tags">Tags:</label>
                         <tags-input id="tags" ng-model="create.form.tags" min-length="3" max-length="10" add-on-space="true"></tags-input>
+                    </div>
+
+                    <p>Hold Ctrl/Cmd when selecting to select multiple categories.</p>
+                    <div class="form-group">
+                    <!--categories-->
+                        <label for="categories">Categories:</label>
+
+                            <select name="categories" multiple id="categories" ng-model="create.form.categories" placeholder="categories">
+                                <option value="comedy">Comedy</option>
+                                <option value="action">Action</option>
+                                <option value="horror">Horror</option>
+                                <option value="romance">Romance</option>
+                                <option value="drama">Drama</option>
+                            </select>
                     </div>
 
                     <div>
