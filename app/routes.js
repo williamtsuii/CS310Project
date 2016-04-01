@@ -254,7 +254,7 @@ module.exports = function (app) {
         "hidden" : req.body.hidden
       });
 
-      console.log(comicProperties);
+      //console.log(comicProperties);
 
         var comicToSave = new ComicSans(comicProperties);
         comicToSave.save(function(err) {
@@ -368,7 +368,7 @@ module.exports = function (app) {
             if (err) {
                 console.log(err);
             } else {
-                //console.log(Comic.comments);
+                console.log(Comic);
                 res.send(Comic.comments);
             }
         });

@@ -304,8 +304,8 @@ var comicSans;
                 var canvas1 = canvas;
                 fabric.Image.fromURL(e.target.result, function add(oImg) {
                     oImg.scale(0.1);
-                    canvas1.add(oImg).renderAll();
-                    canvas1.setActiveObject(oImg);
+                    canvas1.add(oImg);
+                    //canvas1.setActiveObject(oImg);
                 });
             };
             reader.readAsDataURL(Image);
@@ -319,11 +319,11 @@ var comicSans;
             console.log('comicController loaded!');
             this.User = User;
             this.Comic = Comic;
-            var showStar = this.isFavourite(viewingId);
+            var getcomments = this.getComments(viewingId, this.User, $scope);
+            var showStar = this.isFavourite(viewingId, $scope, getcomments);
             this.view(viewingId, $scope, showStar);
             $scope.comic = this;
             $scope.user = this.User;
-            this.getComments(viewingId, this.User, $scope);
         }
         comicController.prototype.view = function (id, $scope, callback) {
             console.log('viewComic');
@@ -333,7 +333,7 @@ var comicSans;
                 callback();
             });
         };
-        comicController.prototype.isFavourite = function (cid) {
+        comicController.prototype.isFavourite = function (cid, $scope, callback) {
             var flag = false;
             var favourites;
             this.User.getFavourites(currentUserId)
@@ -351,6 +351,7 @@ var comicSans;
                         document.getElementById("on").style.display = 'block';
                         document.getElementById("off").style.display = 'none';
                     }
+                    callback();
                 }
             });
         };

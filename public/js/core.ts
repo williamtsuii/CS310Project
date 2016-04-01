@@ -388,11 +388,11 @@ module comicSans {
             console.log('comicController loaded!');
             this.User = User;
             this.Comic = Comic;
-            var showStar = this.isFavourite(viewingId);
+            var getcomments = this.getComments(viewingId, this.User, $scope);
+            var showStar = this.isFavourite(viewingId, $scope, getcomments);
             this.view(viewingId, $scope, showStar);
             $scope.comic = this;
             $scope.user = this.User;
-            this.getComments(viewingId, this.User, $scope);
         }
 
         view(id: string, $scope, callback) {
@@ -403,7 +403,7 @@ module comicSans {
                     callback();
                 });
         }
-        isFavourite(cid: any) {
+        isFavourite(cid: any, $scope, callback) {
             var flag = false;
             var favourites;
             this.User.getFavourites(currentUserId)
@@ -420,6 +420,7 @@ module comicSans {
                             document.getElementById("on").style.display = 'block';
                             document.getElementById("off").style.display = 'none';
                         }
+                        callback();
                     }
                 });
 
