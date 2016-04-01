@@ -61,6 +61,7 @@ function login(req, res) {
 
 }
 
+
 function logout(req, res) {
     // Let's assume this Firebase reference is already authenticated
     var userDB = refRoot;
@@ -80,6 +81,7 @@ var doIt = function(req, res){
         }
     }
 }
+
 
 
 module.exports = function (app) {
@@ -103,7 +105,7 @@ module.exports = function (app) {
                     "preferences": req.body.preferences,
                     "username": req.body.name,
                     "editor": req.body.editor,
-                    "favourites": 'hello'
+                    "photo" : req.body.photo
                 });
                 login(req, res);
             }
@@ -144,7 +146,7 @@ module.exports = function (app) {
     app.get('/user/getFavourite/:uid', function(req, res) {
         var userId = req.params.uid;
         var userDB = refRoot.child('users/' + userId + '/favourites');
-        userDB.on('value', function(snapshot) {
+        userDB.once('value', function(snapshot) {
             var data = snapshot.val();
             return res.json(data);
         }, function(error) {
@@ -152,11 +154,14 @@ module.exports = function (app) {
         });
     });
 
-    app.put('/user/edit/*', function(req, res) {
-        var userID = req.path;
+    app.put('/user/edit/:uid', function(req, res) {
+        var userID = req.params.uid;
         var userDB = refRoot.child('users/' + userID);
 
-        userDB.set({
+        userDB.update({
+            "preferences": req.body.preferences,
+            "username": req.body.name,
+            "editor": req.body.editor
         }, function(error) {
             if (error) {
                 console.log("failed to create user");
@@ -173,7 +178,15 @@ module.exports = function (app) {
 
         var userDB =refRoot.child('users/' + userId + '/favourites');
         var fave = userDB.push();
-        fave.set(req.body.id, doIt());
+        fave.set(req.body.id, function (error){
+            if(error) {
+                console.log("failed to create user");
+                return res.send(error);
+            } else {
+                console.log("user updated");
+                return res.send(true);
+            }
+        });
     });
 
 
@@ -224,12 +237,12 @@ module.exports = function (app) {
                 res.redirect('/home');
             }
         });
-        console.log(Comic);
+        //console.log(Comic);
 
 
 
       var comicProperties = ({
-        "image": {},
+        "image": req.body.image,
         "id": comicID,
         "title": req.body.title,
         "author": gUID,
@@ -240,6 +253,8 @@ module.exports = function (app) {
         "comments": [],
         "hidden" : req.body.hidden
       });
+
+      console.log(comicProperties);
 
         var comicToSave = new ComicSans(comicProperties);
         comicToSave.save(function(err) {
@@ -353,8 +368,8 @@ module.exports = function (app) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(Comic.comments);
-                res.json(Comic.comments);
+                //console.log(Comic.comments);
+                res.send(Comic.comments);
             }
         });
     });
